@@ -1,1 +1,49 @@
-Day 1 lecture
+Day 2 Lecture
+
+Windows Registery uses hive keys "HKEY_" to organze the registery
+we can use the registery to establish persistence in a windows machine
+
+
+Using the HKEY_CLASSES_ROOT key we can manipulate the registery to allow us to get through windows defender
+HKEY_USER
+s-1-5-18 - System
+s-1-5-19 - Service
+s-1-5-20 - Network
+
+The registery resides in memory if the system loses power it won't be the same when you reboot the machine
+if you are trying to establish persistance you have to store your backdoor somewhere such as ntuser.dat
+
+Creating an Alternate Data Stream on a file
+C:\windows\system32>echo social security numbers > reminder.txt:secret.info 
+
+C:\windows\system32>dir reminder.txt 
+ Directory of C:\windows\system32
+ 02/27/2021 07:13 PM                  23 reminder.txt
+                 1 File(s)            23 bytes
+                 0 Dir(s) 20,060,712,960 bytes free
+
+C:\windows\system32>type reminder.txt 
+Always try your best
+
+Viewing an Alternate Data Stream on a file.
+C:\windows\system32>more < reminder.txt:secret.info 
+social security numbers
+
+C:\windows\system32>notepad reminder.txt:secret.info 
+
+C:\windows\system32>dir /R reminder.txt 
+ Directory of C:\windows\system32
+ 02/27/2021 07:13 PM                   23 reminder.txt
+                                       26 reminder.txt:secret.info:$DATA
+                1 File(s)              23 bytes
+                0 Dir(s)   20,060,557,312 bytes free
+
+C:\windows\system32>type reminder.txt:secret.info 
+The filename, directory name, or volume label syntax is incorrect.
+
+To recursivly search for a file with Alternate Data Stream
+Get-ChildItem C:\Users\CTF\ -Recurse | ForEach-Object { get-item $_.fullname -Stream * } | 
+where { $_.stream -ne ':$DATA' }
+
+
+
