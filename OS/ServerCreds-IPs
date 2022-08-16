@@ -1,11 +1,13 @@
 https://os.cybbh.io/public/os/latest/index.html
+10.50.39.24      stack 3 
 
-LinOps Station - 
-WinOps Station - 
-Admin_Station - 
-Workstation 1 - 
-File-Server - 
-Domain Controller - 
-Workstation2 - 
-Minas_Tirith - 
-Terra - 
+
+LinOps Station - 10.50.28.138
+WinOps Station - 10.50.23.183
+Admin_Station - 10.50.28.138
+Workstation 1 - 10.3.0.5
+File-Server - 10.3.0.3
+Domain Controller - 10.3.0.1
+Workstation2 - 10.3.0.4
+Minas_Tirith - 10.3.0.7
+Terra - 10.3.0.6
