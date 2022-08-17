@@ -1,4 +1,4 @@
-Day 2 Lecture
+Day 2 Lecture - Windows ADS and Registery
 
 Windows Registery uses hive keys "HKEY_" to organze the registery
 we can use the registery to establish persistence in a windows machine
@@ -44,6 +44,151 @@ The filename, directory name, or volume label syntax is incorrect.
 To recursivly search for a file with Alternate Data Stream
 Get-ChildItem C:\Users\CTF\ -Recurse | ForEach-Object { get-item $_.fullname -Stream * } | 
 where { $_.stream -ne ':$DATA' }
+
+
+
+Lecture Day 3 Linux------------------------------------------------------------------------------------------------------------------------------
+creating a config file to enable easier SSH
+create .ssh/config file
+edit the file as follows:
+Host linops
+    HostName 10.50.28.138
+    User student
+    Port 22
+Create an alias in bash_aliases file
+alias sshlinops='ssh linops -X terminator&' - this allows you to ssh and open a terminator shell in the background
+source .bashrc
+Then generate an ssh key
+ssh-keygen
+then copy your key over 
+ssh-copy-id sshlinops
+
+Lecture start
+When getting onto a machine
+Where am I? hostname or uname -a
+Who am I? whoami /id
+What am I allowed to do? sudo -l
+What's going on? w/who and ps -elf
+Why is that happening? (Process Validity: later date fill in)
+How is that happening? 
+What's in the file? 
+
+Machine background
+/bin (/usr/bin or /usr/local/bin) - on some machines bin applications are found in /usr/bin or /usr/local/bin instead of /bin
+- Binarys this is going to be a lot of the application files
+
+/sbin (/usr/sbin) - System Binarys
+- requires sudo to use these
+
+/home - current users home directory
+
+/usr
+- some binarys
+- documentations
+- example files for certain applications
+- catch all for any files that are used system wide
+
+/etc - Everything that's configurable
+- catch all for all of the configuration files that are system level
+
+/var
+- Things that are likely to change such as log files
+
+/boot - Directory read at boot
+- This is where the GRUB and its config files are as well as the bootloaders
+
+/dev - devices 
+- headphones
+- keyboards
+- mice
+- data streams stdin, stdout, stderr
+- where the harddrive can be found (sda)
+
+/lib - The library
+- functions are kept here.
+- similar to a windows .dll
+
+/media - removable media like a flash drive or a cd
+
+/mnt - reserved for permeantly attachted external storage
+
+/opt - Optional add on applications and their files
+
+/root - Home directory for the root user
+
+/run - runtime and variable data: mounted at boot and is designed to hold data for that instance of the system running
+
+/tmp - Temporary files: Everyone has access to tmp, nothing stays here it is a good place for temporary sustained access
+
+/proc - processes
+
+Important Files------------------------------------
+/etc/shadow
+
+/etc/passwd
+username:passhold:gid:uid:comments:home dir:default shell
+/etc/group
+Groupname:password:gid:grouplist
+
+File Information------------------------------------
+ls -lisa
+reading a directory listing
+permissions: filetype,user{3},group{3},others{3}
+
+suid - when this file is executed is executed like the owner is doing it
+sgid - when the file executing is ran it runs as if the group member was running it
+stickybit - when the sticky bit is set only the file owner can delete the file
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
