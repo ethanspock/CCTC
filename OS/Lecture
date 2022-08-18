@@ -139,12 +139,80 @@ suid - when this file is executed is executed like the owner is doing it
 sgid - when the file executing is ran it runs as if the group member was running it
 stickybit - when the sticky bit is set only the file owner can delete the file
 
+Python3 - CTFd
+
+Lecture Day 4 Windows Boot Process---------------------------------------------------------------------------------
+
+BIOS - 
+MBR
+ - points to the boot manager(bootmgr)
+   bootmgr allows you to pick how you want the system to boot
+Windows Boot Manager
+ - Points to the Boot Configuration Data Store (BCD)
+BCD
+ - Points to the OS loader
+OS Loader
+ - winload.exe
+      - Like a cold start. It takes the operating system longer to get started
+      - However Windows10 has an option auto selected called fast boot that uses winresume however with this option selected it only 
+        stores the OS's state nothing else. It is like a glorified sleep state. There is a downside to this winexplorer i.e. the file
+        system needs to turn all the way off in order to be effecient.
+ -winresume.exe
+      -winresume.exe is used for hibernation. It takes the state of ram (everything thats going on at the time) and writes it to a file
+       doing this allows the system to read the .sys file that the ram state was stored in. Allows for a faster boot up and restores where you are
 
 
+UEFI
+
+GPT - GUID Partition Table
+ - UEFI doesn't check for the GPT it checks with the bootmgrfw.efi to see if the GPT exists and if so where it is. 
+
+UEFI Boot Manager
+ - Tells UEFI where to find the GPT as well as where the BCD is.
+ 
+BootLoader
+-BIOS
+  - NTLDR.exe was used for Kernel 5 which was windows 7 however boot.ini which is used with this is editable in a text editor making this very unsecure.
+  - Bootmgr.exe is for Kernel 6+ 
+-UEFI
+  - Bootmgrfw.efi is Kernel 6+, UEFI requires at least kernel 6 to be used 
+
+Kernels
+-Legacy Kernel 5 (Boot.ini)
+    - Boots straight to NTOSKRNL
+-Kernel 6+ (BCD)
+    - Goes to Winload.exe/Winresume.exe or Winload.efi/Winresume.efi then onto the NTOSKRNL
+    
+
+NTOSKRNL
+- Loads the following: Pagefile.sys, Loads Device Drivers, Load directory Hive, HAL.dll, and Process Manager; Process Manager launches System Idle Process
+- It also starts SMSS.exe (Master sessions Manager)
+
+SMSS.exe - relies on a dll called terminal services.
+- Launches two sessions to start its process
+    - Session 0 (This is system level privilieges)
+        - Launches CSRSS.exe(Session 0)
+        - Also launches WININT.exe(Session 0)
+            - WININT launches the following in session 0
+                - LSASS.exe
+                - SVCHOST.exe
+    - Session 1 (This is user level privilieges)
+        - Launches CSRSS.exe (Session 1)
+        - WINLOGON.exe(Session 1)
+            - WINLOGON launches the following in Session 1
+                - LOGONUI.exe
+                - USERINIT.exe
+                    - USERINIT also launches Explorer.exe once explorer.exe is launched USERINT kills itself
+                        - Explorer.exe is what we interface with when using the windows system
 
 
-
-
+BDCEDIT
+from cmd
+    - Type C:\Windows\Panther\setupact.log | findstr /i "detect boot enviroment"
+    - We can also bcdedit | findstr /i winload or winresume
+        - If we see one or the other we can see how the system was started
+    - You can also use the GUI msinfo32
+- When using bcdedit command when looking for the active boot information you need to look for the identifier with the value {current}. Everything else is slightly irrelevant but can be useful. 
 
 
 
