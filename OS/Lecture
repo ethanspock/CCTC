@@ -213,29 +213,245 @@ from cmd
         - If we see one or the other we can see how the system was started
     - You can also use the GUI msinfo32
 - When using bcdedit command when looking for the active boot information you need to look for the identifier with the value {current}. Everything else is slightly irrelevant but can be useful. 
+bcdedit /set safeboot minimal - a basic command line interface. Only thing that starts is the bare minimum
+/set safeboot Networking - Basic cli but you have access to network resources.
+/set safebootalternateshell yes - allows you to use shells other than cmd and powershell.
+ncdedit /deletevalue safeboot - deleteing these values restores the ability to have a standard launch
+bcdedit /deletevalue safebootalternateshell
+
+Easier -
+msconfig gui 
+you can edit your boot settings from an interactive gui
 
 
 
+Lecture Day 5 Linux Boot Process------------------------------------------------------------------------
+Differences between BIOS and UEFI 
+UEFI Boots much faster than BIOS especially for Windows Machines
+UEFI Firmware us usually loaded into flash memory or EEPROM, making it easier to update and patch
+UEFI offers Secured Boot mode which only allows verified drivers to load
+UEFI offers drive support of up to 9 zettabytes while BIOS os 2 terabytes
+
+Good Commands - 
+rsyslogd
+dmidecode
+lsblk
+df -h (What is mounted and where as well as how much space they have)
+sudo xxd -l 512 -g 1 (this will allow you to view the entire disk)
+    - The mbr will always have a eb63 at the begining of the hex string when you run the above command
+      the 63 tells the file system to jump to memory position 63
+    - The last 66 bytes are ... and the last two bytes should always be 55AA or AA55
+sudo parted -l (This will give information about the MBR as well)
+sudo dd if=/dev/sda of=mbrcopy bs=1 count=512 (This will allow you to make a copy of the mbr)
+to view the copy you need to use xxd
+
+Big Mike Got Killed In Russia
+BIOS - Basic Input Output System
+MBR - Master Boot Record
+GRUB - Grand Unified Bootloader
+KERNEL
+Init (SysV or SystemD)
+RunLevels
+
+
+Systemd
+Bios - also refered to as boot firmware loads and runs a boot loader
+ - First program to run on startup
+     - If stored in flash memory -> becomes a target for BIOS Rootkits
+ - Performs POST(Power on self test)
+ - Performs system integrity check
+ - Builds a device tree(mice,keyboard,hard drive, video cards, etc.)
+ - Reads and executes the first sector on the boot disk(MBR)
+MBR(Master Boot Record) -BIOS runs bootstrap code in MBR Firmware executes the UEFI executables and pass                            control to the GRUB
+ - finds the kernel image on disk, loads it into memory and starts it.
+ - 
+ - 
+ - 
+ - 
+GRUB(Grand Unified Bootloader) - 
+  
+ - Configuration file /boot/grub/grub.cfg
+ -   GRUB menu allows your to pick which OS you want to load
+        Can use this to get into single user mode on older systems
+cat /boot/grub/grub.cfg (can be used to view the Grub config file i.e. Kernel location)
+  
+Kernel - executes /sbin/init
+ - initiliazes device drivers
+ - mounts the root filesystem
+ - starts a program called init with a PID of 1. This point is the user start
+ - Manages the interactions between the OS and the hardware
+ - Supports Modules
+    - lsmod (command to view the support modules)
+  - Hardcoded to Execute /sbin/init 
+ 
+ 
+Init(SystemD) - executes runlevel programs
+ - sets the rest of the system processes in motion via pre-configured runlevels
+ - Target Units
+    - cat /etc/inittab
+ - /etc/inet.d
+    - S and K files (S: Start K: Kill)
+ - 
+Default Target - 
+ - 
+ - 
+ - 
+ - 
+
+
+SysV/System 5
+BIOS - Executes the MBR
+MBR - Executes the GRUB
+GRUB - Executes the Kernel
+Kernel - Executes /sbin/init
+Init - Executes runlevel programs
+Runlevel - executed from /etc/rc.d/rc*.d
+
+
+Day 6 Windows Process Validation--------------------------------------------------------
+
+
+60% of all forensics on exploited machines is process validity
+
+ - tasklist
+ - get-process
+
+Discovering hidden processes, services, and finding normal and abnormal
+activity in PS
+ - How do we discover normal,abnormal,and hidden processes and services
+     - Get-process SMSS,CSRSS,LSASS | sort -property Id
+ - Do boot processes have descriptions
+     - Get-Process | select-object Name,Id,Description | sort-object -property Id
+ - Where do the system processes and services normally run from (C:\Windows\System32)
+     - Get-Process | Select-Object Name,Id,Path
+     - Get-Ciminstance Win32_service | Select-Object Name,Processid,Pathname
+ - View Modules/DLLs used by defined processes and their file locations
+     - Get-Process | foreach {$a} {$_.modules} | more
+     - Get-Process -name "*chrome*" | select-object -ExpandProperty Modules | more
+ - View only modules/DLLs used by a certain exe in the name and their file location
+     - Get-Process Chrome | foreach {$a} {$_.modules} | Where-Object ModuleName -like "*chrome*"
+       | more | ft -wrap
+     - Get-Process -Name "*chrome*" | select-object -ExpandProperty Modules |
+       Where-Object ModuleName -like '*chrome*' | more | ft -wrap
+ - View process by priority levels of process importance
+     - Get-Process | Select Name,Priorityclass
+     - Tasklist /m
+ Viewing Process with CMD
+     - tasklist
+  - Display verbose task info
+     - tasklist /v
+  - display without trunication
+     - tasklist /svc
+  - display modules/dlls associated to all processes
+     - tasklist /m | more
+  - display modules/dlls associated with a to a specific process
+     - tasklist /m /fi "IMAGENAME -eq chrome.exe"
+  - formating options
+     - tasklist /fo:{table|list|csv}
+  - filtering for a specific string/process
+     - tasklist /fi "IMAGENAME eq lsass.exe"
+  Viewing Processes via GUI
+  - Task Manager (taskmgr.exe)
+  - Process Explorer (procexp.exe)
+  
+ How to View Services
+ 
+ Viewing services with Powershell
+ - Get-Ciminstance
+ - Get-Service
+ - svchost
+ - Get-WMIobject ********most info
+ 
+ - View only system services and display Name,PID,and the path
+    - Get-Ciminstance Win32_service | select Name,Processid,Pathname | more | ft -wrap
+ - View all services
+    - Get-service
+ - view a defined service showing all properties in list format
+    - get-service ALG | format-list *
+ view only currently running services
+    - Get-Service | Where-Object {$_.status -eq "Running"}
+    
+Viewing services with CMD
+ - View all services
+    - sc query
+ - View extended info for all services
+    - sc queryex type=service
+ - View extended info for all inactive services
+    - sc queryex type=service state=inactive
+ - Additional examples
+    - sc /?                     # Basic service enumeration
+    - sc qc                     # Configuration information for a service
+    - sc queryex eventlog       # Information for the eventlog service including PID
+    - sc qdescription eventlog  # Query eventlog service description
+    - sc qc eventlog            # Show the binary command that loads the service
+    - sc showsid eventlog       # Displays the service sid and status
+    - sc enmudepend             # Lists the services that cannot run unless the specified service
+                                  is running
+
+ - View all currently running services
+    - net start
+ Viewing services in GUI
+    - services.msc
+    - psservice
+       - Sysinternal tool
+ 
+Scheduled Tasks
+
+ - What are scheduled tasks
+    - Schedule the launch of programs or scripts when defined conditions are met such as:
+       - Pre-set time
+       - when the local machine is booted
+       - when a user logs on
+    - Easy way to hide malware and have itself set to execute at set times
+       - Seperate file can be run from schedule tasks that calls the malware like a script
+    - Good way to establish persistence
+ - How to view scheduled tasks
+ - Viewing in Powershell
+    - View all properties of the first scheduled task
+       - Get-ScheduledTask | select * | select -first 1
+    - Powershell uses encoded strings to conceal the task to run
+       - We can use tools such as cyberchef to decode these
+ - Viewing in CMD
+    - schtasks /query /tn "IchBinBosh" /v /fo list
+ - Viewing via GUI
+    - Task Scheduler
+ 
+ - Autorun Registery Locatioms
+    - Registery Key Locations
+       - HKLM\Software\Microsoft\Windows\CurrentVerstion\Run - Local Machine
+       - HKLM\Software\Microsoft\Windows\CurrentVerstion\RunOnce
+       - HKLM\System\CurrentControlSet\Services
+    - User specific autoruns
+       - HKCU\Software\Microsoft\Windows\CurrentVerstion\Run - Current User
+       - HKCU\Software\Microsoft\Windows\CurrentVerstion\RunOnce
+       - HKU\<sid>\Software\Microsoft\Windows\CurrentVerstion\Run - Specific User
+       - HKU\<sid>\Software\Microsoft\Windows\CurrentVerstion\RunOnce
+    - The order in which services are loaded and can be adjusted
+       - HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\ServiceGroupOrder
+       - HKEY_LOCAL_MACHINE\CurrentControlSet\Control\GroupOrderList
+
+View Network Connections
+- Viewing Network Connections via powershell
+   - Show all Connections in the 'established' state
+      - Get-NetTCPConnection -State Established
+- View Network Connections via CMD
+   - Show netstat help
+      - netstat /?
+         -a   # Display all connections and listening ports
+         -n   # Display address and port numbers in numerical form
+         -o   # Displays the owning PID associated with each connection
+         -b   # Displays the executable involved in creating each connection
+   - Displays all TCP/UDP connections with ports in numerical form with PID and executable
+     associated to the connections
+      - netstat -anob | more
+Windows Sysinternals
+   - Using PROCMON to monitor the Windows Boot Process
+   
+User Access Controls
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Day 7 Linux Process Validity------------------------------------------------------------
 
 
 
