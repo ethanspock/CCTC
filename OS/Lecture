@@ -226,6 +226,7 @@ you can edit your boot settings from an interactive gui
 
 
 Lecture Day 5 Linux Boot Process------------------------------------------------------------------------
+
 Differences between BIOS and UEFI 
 UEFI Boots much faster than BIOS especially for Windows Machines
 UEFI Firmware us usually loaded into flash memory or EEPROM, making it easier to update and patch
@@ -306,6 +307,38 @@ GRUB - Executes the Kernel
 Kernel - Executes /sbin/init
 Init - Executes runlevel programs
 Runlevel - executed from /etc/rc.d/rc*.d
+
+ - /etc/systemd/system <--- User created services
+ - /lib/systemd/system <--- Created by package maintainers `/user/lib/systemd/system ^^^ ^^^
+systemctl
+ - Manage Systemd
+    - systemctl list-dependencies graphical.target
+ - Get the wants
+    - systemctl show -p Wants list-dependencies graphical.target
+ - View Unit files (Unit: Item that can be refferenced)
+    - systemctl list-unit-files
+ - Use systemctl to locate and Enumerate a Unit
+    - systemctl cat graphical.target 
+
+ - /etc/environment
+    Global/System wide
+    Loaded at boot
+ - /etc/profiles
+    Used for interactive login shells (ssh into the system and authenticated)
+    .profile for individual user
+    Loaded at login
+    System wide
+    Customize the system
+ - /etc/bashrc
+    Used for interactive non-login shells (ctrl-alt-t)
+    System wide
+    Customizes the system
+    .bashrc for user
+
+
+
+
+
 
 
 Day 6 Windows Process Validation--------------------------------------------------------
