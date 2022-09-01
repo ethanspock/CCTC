@@ -1,1 +1,42 @@
-REVIEW DAY MFER
+Linux (4 questions)
+ - Host enumeration/process validity (why is stuff happening)
+    - Where am I, 
+    - who am I, 
+    - What am I allowed to do, 
+    - What's going on, 
+    - Why is that happening, 
+    - How is it happening, 
+    - what is in the file,
+    - should I raise my hand...yes. (Line 66 Lecture)
+ - SS -ntlp (Port numbers, TCP, listening ports, process it's attachted to) allows you to view listening connections 
+ - Remeber:
+    - ~/.bashrc
+    - ~/.bash_profile
+    - /etc/profile
+    - /etc/profile.d
+    - ~/profile
+
+
+
+
+
+
+Windows(6 questions)
+Powershell and Sysinternals
+test-path
+Check for weird ports (patterns of numbers)
+   - TCPview
+   - netstat -anob
+   - net use * \\live.sysinternals.com\tools
+   - get-nettcpconnections
+Check processes 
+   - get-process svchost | select name,id,path
+   - procmon
+   - autoruns
+   - procexp
+   - taskmanager
+   - User assist is encoded with ROT13
+   - 
+
+
+
