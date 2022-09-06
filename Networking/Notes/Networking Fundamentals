@@ -1,16 +1,83 @@
+Binary
+1 bit = Bit/Flag
+4 bits = 1 Nibble
+8 bits = 1 Byte/Octet
+16 bits = Half Word
+32 bits = Word
+64 bits = Very Long Word
+
+Base 2 - Lowest level format and is the base language used by computer systems. Uses a series of "0" and "1" in groupings of 8 bits/1 byte
+Base 10 - Numbering used by humans (decimal)
+Base 16 - Used by computers and humans to express larger deciaml numbers or long stream of binary into more managable groups (Hexidecimal)
+Base 64 - Like base 16 but uses the entire alphabet not just A-F
+
+Message Formatiing Method
+Header - Data( Higher-Layer Header,Higher-Layer Data,Higher-Layer Footer/Trailer ) - Footer/Trailer
+
+Header - Contains information related to control and communication processes between different protocol elements for different devices.
+Data - This is the actual data being transmitted whch contains the payload. This payload may include another higher level message that consists of the same
+       elements. Data may contain information used to setup a logical connection before the data is sent.
+Footer - Commonly called the trailer. The contents vary between communication methods or protocols. Usually the cylinical redundancy check(CRC) error checking
+         component is placed here. This is not always required
+
+
+OSI
+Layer 1 - Physical Layer (Hardware - Bluetooth,USB, Wi-Fi, DSL)
+   - Hardware Specifications
+   - Encoding and signaling
+   - Data Transmission and Reception
+   - Physical Network Design
+Layer 2 - Data Link (PPP,ATM,802.2/3 Ethernet,Frame Relay)
+   - MAC (Media Access Control)
+   - LLC (Logical Link Control)
+Layer 3 - Network (IP,ICMP,IGMP)
+   - IPv4 Auto Configuration
+      - APIPA
+      - RFC 3927
+   - IPv6 auto configuration
+      - SLAAC (Stateless address auto-configuration)
+      - RFC 4862
+Layer 4 - Transport (TCP,UDP)
+   - TCP Flags
+      - 1 FIN
+      - 2 SYN
+      - 4 RST
+      - 8 PSH
+      - 16 ACK
+      - 32 URG
+      - 64 ECE
+      - 128 CWR
+Layer 5 - Session (NetBIOS,PPTP,RPC,NFS)
+   - Protocols
+      - SOCKS
+         - SOCKS 4/5 (TCP 1080)
+            - Uses various Client/server exchange messages
+               - Client can provide authentication to server
+               - Client can request connections from server
+      - NetBIOS (SMB)
+         - NetBIOS Datagram Service - UDP 138
+         - NetBIOS Session service - TCP 139
+         - SMB/CIFS (TCP 139/445 and UDP 137/138)
+      - PPTP/L2TP
+         - PPTP (TCP 1723)
+         - L2TP (TCP 1701)
+      - RPC (Any Port) Is a request/response protocol
+         - User application will
+            - Sends a request for information to a external server
+            - Recieves the information from the external server
+            - Display collected data to user
+Layer 6 - Presentation (SSL,TLS,JPEG,GIF)
+Layer 7 - Application (DNS,HTTP,TELNET)
 
 
 
-
-
-
-
-
-
-
-
-
-
+Scapy info
+VLAN
+a=Ether()
+a.show()
+a.type=0x8100
+b=Dot1Q()
+b.show()
 
 
 
