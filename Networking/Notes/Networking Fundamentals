@@ -6,19 +6,24 @@ Binary
 32 bits = Word
 64 bits = Very Long Word
 
-Base 2 - Lowest level format and is the base language used by computer systems. Uses a series of "0" and "1" in groupings of 8 bits/1 byte
+Base 2 - Lowest level format and is the base language used by computer systems. 
+         Uses a series of "0" and "1" in groupings of 8 bits/1 byte
 Base 10 - Numbering used by humans (decimal)
-Base 16 - Used by computers and humans to express larger deciaml numbers or long stream of binary into more managable groups (Hexidecimal)
+Base 16 - Used by computers and humans to express larger deciaml numbers or long stream of 
+          binary into more managable groups (Hexidecimal)
 Base 64 - Like base 16 but uses the entire alphabet not just A-F
 
 Message Formatiing Method
 Header - Data( Higher-Layer Header,Higher-Layer Data,Higher-Layer Footer/Trailer ) - Footer/Trailer
 
-Header - Contains information related to control and communication processes between different protocol elements for different devices.
-Data - This is the actual data being transmitted whch contains the payload. This payload may include another higher level message that consists of the same
-       elements. Data may contain information used to setup a logical connection before the data is sent.
-Footer - Commonly called the trailer. The contents vary between communication methods or protocols. Usually the cylinical redundancy check(CRC) error checking
-         component is placed here. This is not always required
+Header - Contains information related to control and communication processes between different 
+         protocol elements for different devices.
+Data - This is the actual data being transmitted whch contains the payload. This payload may include 
+       another higher level message that consists of the same elements. Data may contain information 
+       used to setup a logical connection before the data is sent.
+Footer - Commonly called the trailer. The contents vary between communication methods or protocols. 
+         Usually the cylinical redundancy check(CRC) error checking component is placed here. 
+         This is not always required
 
 
 OSI
@@ -31,12 +36,38 @@ Layer 2 - Data Link (PPP,ATM,802.2/3 Ethernet,Frame Relay)
    - MAC (Media Access Control)
    - LLC (Logical Link Control)
 Layer 3 - Network (IP,ICMP,IGMP)
-   - IPv4 Auto Configuration
-      - APIPA
-      - RFC 3927
-   - IPv6 auto configuration
-      - SLAAC (Stateless address auto-configuration)
-      - RFC 4862
+   - IPv4 
+      - Auto Configuration
+         - APIPA
+         - RFC 3927
+      - IPv4 Header
+         - Fragmentation bit is used to reassemble a frgamented packet in the correct order
+            - When a packet is fragmented it becomes bigger because of additional overhead
+            - We can tell a packet is frgamented based on the 'MF'(More fragments) flag being set
+              as well as the offset field containing a value
+            - Reserved bit is sometimes called the evil bit due to it's ties to blackhat hackers
+   - IPv6 
+      - auto configuration
+         - SLAAC (Stateless address auto-configuration)
+         - RFC 4862
+      - IPv6 Header
+         - Source and Destination sizes are significantly larger because of the future goals of IPv6
+         - TTL has changed to Hop Limit
+         - Protocol has changed to Next Header
+         - Total length was changed to Payload length
+         - Type of service has been changed to traffic class
+   - Fingerprinting
+      - TTL is used to fingerprint a packet to determine what the potential OS the packet came from
+   - ICMP: Administrative protocol, used for trouble shooting
+      - Was originally developed as a means of error reporting but has morphed to provide more to analysts
+        It is used for trouble shooting, in IPv6 it is used for Fragmentation,Neighbor discovery, 
+        and Stateless Address AutoConfiguration(SLAAC)
+   - Zero Configuration
+      - 
+   - Addressing schemes for a network
+      - Each device on a network has a logical address associated with it. This address is independent 
+        of the hardware device and must be unique in a network
+   - 
 Layer 4 - Transport (TCP,UDP)
    - TCP Flags
       - 1 FIN
@@ -47,6 +78,28 @@ Layer 4 - Transport (TCP,UDP)
       - 32 URG
       - 64 ECE
       - 128 CWR
+   - TCP
+      - Connection oriented
+         - requires that a connection with a specific agreed-upon parameters be established before data is sent
+         - provides segmentation and sequencing
+         - provides connection establishment and acknowledgements
+         - provides flow control
+         - identify common application layer protocols or functions that rely on TCP
+         - Source Port is assigned a random high port
+         - Destination Port is the agreed upon port
+         - Sequence and ack numbers are used for ordering the packets properly when fragmented
+         - flags "guide the conversation"
+    - UDP
+      - Connection-less
+         - requires no connection before data is sent
+         - provides no ordering,duplicate protection or delivery guarantee
+         - does provide integrity checking
+         - identify common application layer protocols or functions that  rely on UDP
+      - UDP Header
+         - Source port the local port being utilized
+         - Destinaton port is the port being used on the recieving end
+         - Length is the length of the payload
+         - Checksum is used for error checking
 Layer 5 - Session (NetBIOS,PPTP,RPC,NFS)
    - Protocols
       - SOCKS
@@ -67,7 +120,110 @@ Layer 5 - Session (NetBIOS,PPTP,RPC,NFS)
             - Recieves the information from the external server
             - Display collected data to user
 Layer 6 - Presentation (SSL,TLS,JPEG,GIF)
+   - This layer is used for translating, formatting, encryption, and compression of data
+      - Translation: interoperability between encoding methods as different computers use different methods
+      - Formatting: This layer is responsible to put the file in a format that is readable such as
+         - ASCII or EBCDIC
+         - .doc, .oot, or .xls
+         - mp3 or wav
+         - mp4 or avi
+         bmp,jpeg,gif,tiff or png
+      - Encryption: This layer is responsible for the encryption/decryption gets carried out
+         - Symetric: AES,Blowfish,Twofish,DES, and RC4
+         - Asymetric: PKI,Deffie-Hellman,DSS,RSA,Elliptic curve
+      - Compression: If the data is to big the presentation layer will compress the data for you
+         - Zip,tar,RAR,7zip,CAB
+
 Layer 7 - Application (DNS,HTTP,TELNET)
+   - FTP (TCP 20/21)
+      - Messages
+         - FTP Commands
+         - FTP reply codes
+      - Modes
+         - Active(default)
+            - FTP Issues
+               - NAT and Firewall traversal issues
+               - complications with tunneling through ssh
+               - passive ftp solves issues related to active mode and is most often used in modern systems
+         - Passive
+   - SSH (TCP 22)
+      - Messages provide:
+         - Client/server authentication
+         - Asymmetric or PKI for key exchange
+         - Symmetric for session
+         - User authentication
+         - Data stream channeling
+      - Architecture
+         - Server
+         - client
+         - session
+         - keys
+            - User key: Asymmetric public key used to identify the user to the server
+            - Host key: Asymmetric public key used to identify the server to the user
+            - Session key: Symmetric key created by the client and server to protect the sessions communication
+         - Known-Hosts Database: Collection of host keys that the client and server use for mutual authentication
+         - Agent: Stores keys as a convenience for users
+         - Signer - signs the host-based authentication packets
+         - Random Seed: used for entropy in creating pseudo-random numbers
+         - Config file: settings that exist on the client and server to dictate configuration of ssh and sshd
+      - Implementation Concerns
+         - Using password authentication only
+         - Key rotation
+         - Key management
+         - Implementation specification (libssh,sshtrangerthings)
+   - Telnet(TCP 23)
+      - Messages
+         - Telnet commands
+         - Telnet options
+   - SMTP (TCP 25)
+      - Messages
+         - SMTP commands
+         - SMTP responses
+   - TACACS (TCP 49): Simple/Extended
+   - HTTP(S)(TCP 80/443)
+      - Messages
+         - Methods
+            - Get/Head/Post/Put
+         - HTTP status codes
+            - 100,200,300,400
+   - POP(TCP 110)
+      - Messages
+         - POP commands
+         - POP Replies
+         - POP Capabilities
+   - IMAP(TCP 143)
+      - Messages
+         - IMAP Commands
+         - IMAP Status Response
+         - IMAP Capabilities
+   - RDP(TCP 3389)
+      - Compression or encryption support
+      - Desktop size and color depth
+      - Keyboard mapping
+      - Remote system control
+      - Mouse-cursor color properties
+   - DNS(Query/Response)(TCP/UDP 53)
+      - How we get where we are going. When typing in google.com to a browser your browser reaches out to a DNS
+        server to get the ip address of the website you are requesting
+   - DHCP(UDP 67/68)
+   - TFTP(UDP 69)
+      - Messages
+         - TFTP OPcodes
+         - TFTP Error codes
+   - NTP(UDP 123)
+      - Ensures that all clients on a network are on the same time and will not be kicked off the network
+   - SNMP(UDP 161/162)
+      - 7 Message types
+         - Get request
+         - Set request
+         - Get next
+         - Get Bulk
+         - Response
+         - Trap
+         - Inform
+   - RADIUS(UDP 1645/1646 and 1812/1813)
+   - RTP(UDP 1023 and above)
+   
 
 
 
@@ -79,6 +235,46 @@ a.type=0x8100
 b=Dot1Q()
 b.show()
 
+
+Day 2 of Fundamentals----------------------------------------------------------------------
+
+Wireshark
+ - Here we will familiarize you with the various capabilities of Wireshark.*
+    - Colorize traffic
+       - Menu → View → Coloring Rules…
+       - Right click on item → Colorize Conversation → (L2 thru L4)
+ - Protocol Hierarchy
+    - Menu→ Statistics → Protocol Hierarchy
+ - Firewall rules (Under "Tools". Assists in creating firewall rules)
+ - Exporting objects (File → Export Objects)
+ - Geo location
+    - Download DBs from maxmind.com; Edit → preferences → name resolution → GeoIP database directories "Edit"
+ - Decrypt traffic
+    - DEMO: Edit → Preference → Protocols → SSL
+    - https://wiki.wireshark.org/HowToDecrypt802.11
+ - Conversations
+    - menu → Statistics → Conversations
+ - Endpoints
+    - menu → Statistics → Endpoints
+ - I/O Graph.
+    - menu → Statistics → I/O Graph
+ - ipv4 and ipv6 statistics
+    - menu → Statistics → ipv4 Statistics →
+ - Expert Information
+    -  Menu → Analyze → Expert Information
+    
+    
+Routing
+
+ - Routing Protocol
+    - Used between layer 3 devices to learn and advertise routes and maintain routing tables
+    - routing protocol routes a routed protocol for learning and mainting a routing table
+    - examples include RIP,EIGRP,OSPF,BGP,etc.
+ - Routed protocol
+    - Used between routers to direct user traffic. It is also called network protocols
+    - routed protocols are routed by routing protocols
+    - Examples include IP,IPX,AppleTalk,NetWare,etc.
+    
 
 
 
