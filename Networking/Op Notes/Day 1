@@ -43,10 +43,37 @@ e=ICMPv6NDOptPrefixInfo()
 e.prefix="fd00:deaf:cafe::" (Given target)
 e.prefixlen=64
 send(a/b/c/d/e)
+-----------------------------------------------------------------------------------
+Berkley Packet Filter
+IPv4 and IPv6 TTL <= 64
+'ip[8]<=64||ip6[7]<=64'
 
+IPv4 Fragment bit not set
+'ip[6]&64 = 64'
 
+Transport Layer source port greater than 1024
+'udp[0:2]>1024 || tcp[0:2]>1024'
 
+UDP protocol being set utilizing IPv4 and IPv6 Headers
+'ip[9]=0x11 || ip6[6]=0x11'
 
+Only packets with the ACK/RST or ACK/FIN flag set
+'tcp[13]&0xff=0x14 or tcp[13]&0xff=0x11'
+
+Capture packets with an IP ID field of 213
+'ip[4:2]=213'
+
+Capture all packets with a VLAN tag
+'ether[12:2]=0x8100'
+
+Capture all packets relating to DNS
+'tcp[0:2]=53||udp[0:2]=53||tcp[2:2]=53||udp[2:2]=53'
+
+Capture IPv4 packets with a dscp field of 24
+'ip[1]&0xfc=96'
+
+Checking fro traceroute entrys
+'ip[8]=0x01&&(ip[9]=0x01||ip[9]=0x11)'
 
 
 
