@@ -1,2 +1,49 @@
-
+ - Socket types
+    - Stream Sockets:Connection oriented and sequenced; methods for connection establishment
+                     and tear down. Used with TCP,SCTP, and bluetooth.
+    - Datagram Sockets: Connectionless; designed for quickly sending and receiving data. Used with UDP
+    - Raw Sockets: Direct sending and receiving of IP packets without automatic protocol-specific formatting
+ - User Space vs. Kernel space sockets
+    - User Space Sockets
+       - Stream Sockets
+       - Datagram Sockets
+    - Kernel Space Sockets
+       - Raw Sockets
+ - Socket Creation and Privilege level
+    - User space sockets: The most common sockets that do not require elevated privileges to preform
+                          actions on behalf of user applications.
+       - Using TCPDUMP or wireshark to read a file
+       - Using nmap with no switches
+       - using netcat to connect a listener
+       - using netcat to create a listener above the well established port range (1024+)
+       - using /dev/tcp or /dev/udp to transmit data
+    - Kernel Space Sockets: Attempts to access hardware directly on behalf of a user application
+                            to either prevent encapsulation/decapsulation or to create packets from
+                            scratch, which requires elevated privileges
+     
+ - Understanding Python Terminology
+    - Modules
+       - Functions
+       - Exceptions
+       - Constants
+       - Objects
+       - Types
+  - Network programming with Python3
+     - Network sockets primarily use the Python3 socket library and socket.socket function
+        - Import socket
+           - s = socket.socket(socket.FAMILY, socket.TYPE, socket.PROTOCOL)
+     - Inside the socket.socket function, you have these arguments in order
+        - socket.socket([*family*[,*type*[*proto*]]])
+     - family constants should be: AF_INET(default),AF_INET6,AF_UNIX
+     - type constants should be: SOCK_STREAM(default), SOCK_DGRAM,SOCK_RAW
+     - proto constants should be: 0(default),IPPROTO_RAW
+     
+     
+  - RAW sockets
+     - Raw Socket use case
+        - Testing specific defense mechanisms - such as triggering and IDS for an effect, or filtering
+        - Avoiding defense mechansims
+        - Obfuscating data during transfer
+        - Manually crafting a packet with the chosen data in header fields
+ 
 
