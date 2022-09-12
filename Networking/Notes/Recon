@@ -77,7 +77,23 @@
       for p in {1..1023}; do(echo >/dev/tcp/10.0.0.104/$p) >/dev/null 2>&1 && echo "$p open"; done
       - Scan a range of IPs for specific ports using Netcat:
       for i in {1..254}; do nc -nvzw1 192.168.65.$i 20-23 80 2>&1 & done | grep -E 'succ|open'
+      - Local Listening ports
+      netstat -ntlp
+      - Local open ports
+      netstat -ntop
+      - nmap to scan
+      nmap 10.10.0.40/27 -v
+      - Ping sweep using nmap with a timer
+      sudo nmap 10.10.0.40/27 -v -Pn -T 5
+      - Ping sweep for specific ports with a timer
+      sudo nmap 10.10.0.40/27 -v -Pn -T 5 -p 21-23,80
       
+      - On a router
+         - show config
+         - show int
+      - Using wget to pull from an FTP server
+         - wget 10.50.21.41:21
+
 
 
 
