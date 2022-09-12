@@ -1,0 +1,88 @@
+ - Reconnaissance types
+    - Active
+       - Network scanning
+          - Remote to Local
+          - Local to Remote
+          - Local to Local
+          - Remote to Remote
+       - Scanning approach
+          - Aim
+             - Wide range Target scan
+             - Target specific scan
+          - Method
+             - Single source scan
+             - Distributed scan
+       - Broadcast Ping and ping sweep
+       - ARP scan
+       - SYN scan
+       - Full connect scan
+       - Null scan
+       - FIN scan
+       - XMAS tree scan
+       - UDP scan
+       - ACK/Window scan
+       - RPC scan
+       - FTP scan
+       - Decoy scan
+       - OS fingerprinting scan
+       - version scan
+       - protocol ping
+       - Discovery probes      
+    - Passive
+       - Gathering information about targets without direct interaction
+       - Not as straight forward and requires more time than active recon
+       - Lower risk of discovery
+       - Involves identifying:
+          - IP addresses and Sub-Domains
+          - External and 3rd party sites
+          - People and Technologies
+          - Content of interest
+          - Vulnerabilities
+       - Possible tools for gathering:
+          - WHOIS queries
+          - Job site listings
+          - Phone numbers
+          - Google searches
+          - Passive OS fingerprinting
+    - Internal
+    - External
+    - Passive External Network Reconnaissance
+       - Information gathered outside of the network using passive methods
+       - Allows for more effiecent attacks and plans
+       - PENR:DNS
+          - Resolves hostnames to IP addresses
+          - RFC 3912
+          - WHOIS queries
+       - PENR:DIG
+          - Typically between primary and secondary DNS servers
+          - If allowed to transfer externally hostnames,IPs, and IP blocks can be determind
+       - PENR:Zone Transfers
+          - Return DNS information
+          - Supplements base queries
+       - PENR:Host History
+          - netcraft
+          - wayback machine
+       - PENR:Google Searches
+          - subdomains
+          - technologies
+       - PENR:SHODAN
+          - Reveals information about technologies,remote access services, improperly configured services, and network infrastructure.
+          - When selected can give additional information and applicable vulnerabilities
+          
+      - Ping sweep
+      for i in {1..254} ;do (ping -c 1 192.168.1.$i | grep "bytes from" &) ;done
+      - Scan 1 system for a range of ports using Netcat:
+      for i in {20..65535}; do nc -nzvw1 192.168.65.20 $i 2>&1 & done | grep -E 'succ|open$'
+      - Scan 1 system for a range of ports using /DEV/TCP:
+      for p in {1..1023}; do(echo >/dev/tcp/10.0.0.104/$p) >/dev/null 2>&1 && echo "$p open"; done
+      - Scan a range of IPs for specific ports using Netcat:
+      for i in {1..254}; do nc -nvzw1 192.168.65.$i 20-23 80 2>&1 & done | grep -E 'succ|open'
+      
+
+
+
+
+
+
+      
+ 
