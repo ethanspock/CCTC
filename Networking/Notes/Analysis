@@ -1,0 +1,140 @@
+ - Fingerprinting and Host Identification
+    - Variances in the RFC implementation for different OS's and systems enables the capability for fingerprinting
+    - Tool used for fingerprinting and host identification can be used passivly(snigging/fingerprinting) or actively(scanning)
+    - POF: Passive OS Fingerprinting
+       - Looks at variations in initial TTL,fragmentation flag, default IP header packet length,window size and TCP options
+       - Configuration stored in:
+          - /etc/p0f/p0f.fp
+ - Network Traffic Sniffing
+    - What makes traffic capture possible
+       - Libpcap
+       - Winpcap (outdated)
+       - NPCAP
+    - Snapshot of what the network looks like during a time frame
+    - No industry standard
+    - 7 dats to establish the initial snapshot
+    - Prerequisite information
+ - Network baseline objective
+    - Determines the current state of your network
+    - Ascertains the current utilization of network resources
+    - Identify normal vs peak network traffic time frames
+    - verify port/protocol usage
+ - Analyze Network Traffic Statistics
+    - Protocol Hierarchy
+    - Conversations
+    - Endpoints
+    - I/O Graph
+    - IPv4 and IPv6 Statistics
+    - Expert information
+ - TCPDUMP
+    - 
+ - Network data types
+    - Full packet capture data
+    - session data
+       - sflow
+       - Netflow
+    - Statistical Data
+    - Packet string data
+    - Alert Data
+    - Log Data
+ - Data Collection Devices
+    - Sensors
+       - In-Line
+       - Passive
+ - Methods of data collection
+    - TAP
+    - SPAN
+    - ARP Spoofing(MitM)
+ - Anomaly Detection
+    - Indicator of Attack
+       - Proactive
+       - A series of actions that are suspisous together
+       - Focus on Intent
+       - Looks for what must happen
+          - Code execution,persistence,lateral movement
+    - Indicator of compromise
+       - Reactive
+       - Forensic Evidence
+          - Malware,IP addresses,exploits,signatures
+    - Indicators
+       - .exe files
+       - NOP sleds
+       - Repeated letters
+       - well known signatures
+       - mismatched protocols
+       - unusual traffic
+       - large amounts of traffic/unusual times
+    - Potential Indicators of attack
+       - Destinations
+       - ports
+       - Public Servers/DMZ
+       - Off-Hours
+       - Network scans
+       - Alarm events
+       - Malware reinfection
+    - Potential indicators of compromise
+       - Unusual traffic outbound
+       - Anomalous user login or account use
+       - Size of responses for HTML
+       - High number of requests for the same files
+       - using non-standard ports/application-port mismatch
+       - Writing changes to the registery/system files
+ - Types of Malware
+    - Adware/Spyware
+       - large amounts of traffic/unusual traffic
+       - IOA
+          - Destinations
+       - IOC
+          - Unusual traffic outbound
+    - Virus
+       - Phishing/watering hole
+    - Worm
+       - Phishing/watering hole
+       - IOA
+          - Alarm events
+       - IOC
+          - changes to registery/system files
+    - Trojan
+       - beaconing
+    - Rootkit
+       - IOA
+          - Malware reinfections
+       - IOC
+          - Anomalous user login/account use
+    - Backdoor
+       - IOA
+          - Remote logins
+    - Botnets
+       - Large amount of IPs
+       - IOA
+          - Destinations,remote logins
+       - IOC
+          - Unusual tasks,anomalous user login/account use
+    - Polymorphic and Metamorphic Malware
+       - 
+    - Ransomware
+       - IOA
+          - Destinations,Ports,Malware reinfection
+       - IOC
+          - Unusual traffic outbound, non-standard ports,unusual tasks
+    - Mobile Code
+       - IOA
+    - Information-Stealing worms
+       - phishing/watering hole,klarge amounts of traffic/unusual traffic
+       - IOA
+          - Alarm events,destinations
+       - IOC
+          - changes to registry/system files,unusual traffic outbound
+ - Potential methods of detection for IOAs and IOCs
+    - Display filters
+    - Follow streams
+    - BPFs
+    - Color Coding
+    - HEX outputs
+ - Decoding
+    - enca
+    - chardet
+    - iconv
+    
+    
+ 
