@@ -88,6 +88,10 @@
           - Unusual traffic outbound
     - Virus
        - Phishing/watering hole
+       - IOA
+          - Alarm events,email protocols
+       - IOC
+          - Changes to registery/system files
     - Worm
        - Phishing/watering hole
        - IOA
@@ -96,6 +100,11 @@
           - changes to registery/system files
     - Trojan
        - beaconing
+       - IOA
+          - Destinations
+       - IOC
+          - Unusual traffic outbound,unusual tasks,
+            changes to registery/system files    
     - Rootkit
        - IOA
           - Malware reinfections
@@ -104,6 +113,8 @@
     - Backdoor
        - IOA
           - Remote logins
+       - IOC
+          - Anomalous user logiin/account use
     - Botnets
        - Large amount of IPs
        - IOA
@@ -111,7 +122,7 @@
        - IOC
           - Unusual tasks,anomalous user login/account use
     - Polymorphic and Metamorphic Malware
-       - 
+       - Depends on the malware type/class
     - Ransomware
        - IOA
           - Destinations,Ports,Malware reinfection
@@ -119,12 +130,18 @@
           - Unusual traffic outbound, non-standard ports,unusual tasks
     - Mobile Code
        - IOA
+          - Depends on the malware type/class
     - Information-Stealing worms
        - phishing/watering hole,klarge amounts of traffic/unusual traffic
        - IOA
           - Alarm events,destinations
        - IOC
           - changes to registry/system files,unusual traffic outbound
+    - BIOS/Firmware Malware
+       - IOA
+          - Malware reinfection
+       - IOC
+          - depends on the malware type/class
  - Potential methods of detection for IOAs and IOCs
     - Display filters
     - Follow streams
