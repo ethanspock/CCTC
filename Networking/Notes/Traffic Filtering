@@ -95,6 +95,32 @@
        - running "snort -D -l /var/log/snort -c /etc/snort/snort.conf" tells snort to run in the background 
          and where to store the logs as well as the conf file location
        - running "ps -elf | grep snort" allows you to view where an external system is storing snort.conf and rules
-       - two files will be found "alert" and a time stamped pcap to view the alert file you have to use tcpdump or something similar
-    
-    
+       - two files will be found "alert" and a time stamped pcap to view the alert file you have to use cat for the
+         log you have to use tcpdump
+         
+    - Failed IDS/IPS
+       - Fail open
+       - Fail close
+    - Attacking and evading IDS/IPS
+       - Based on delta between devices
+          - Insertion attack
+             - IDS accepts packet
+             - Host will not accept packet
+          - Evasion attacking
+             - IDS does not accept packet
+             - Host will accept packet
+    - Technical attacks on IDS/IPS
+       - Packet sequence manipulation
+       - fragmenting payloaf
+       - overlapping fragments with different reassembly by devices
+       - Manipulating TCP headers
+       - Manipulating IP options
+       - Sending data during the TCP connection setup
+    - Non-Technical Attacks against IDS/IPS
+       - attacking during periods of low manning
+         Example - Ramadan 2012 Saudi Aramco Attack
+       - attacking during a surge in activity
+         Example - Target corps. POS machines
+         during the Thanksgiving-Christmas 2013 season
+   - Strengthening Defensive Systems
+      
