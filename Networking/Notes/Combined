@@ -994,3 +994,87 @@ Traffic Filtering
          during the Thanksgiving-Christmas 2013 season
    - Strengthening Defensive Systems
 -----------------------------------------------------------------------------------------------------------------------------------
+Capstone Notes
+Floating IP of start pivot is: 10.50.29.115
+START FLAG: crowning achievement
+Creds
+
+
+PCAP 1: Using BPF’s, determine how many packets with a DSCP of 26 being sent to the host 10.0.0.103.
+tcpdump '(ip[1]>>2=26) and (ip[16:4]=0x0A000067)' -r capstone-bpf.pcap | wc -l
+PCAP 2: What is the total number of fragmented packets?
+tcpdump '((ip[6:2]>0) and (not ip[6] =64))' -r capstone-bpf.pcap | wc -l
+PCAP 3: How many packets have the DF flag set and has ONLY the RST and FIN TCP Flags set?
+tcpdump '(ip[6] & 0x40 = 0x40) and (tcp[13]=5)' -r capstone-bpf.pcap | wc -l
+PCAP 4: An attacker is targeting the host 10.0.0.104 with either a TCP full or half open scan. 
+        Based off the pcap, how many ports are open?
+Socket 1:RAW Sockets are created in ________ space. Specify the one word BASE64 conversion 
+of your answer in ALL CAPS
+KERNEL
+Socket 2: Which module would you need to import to convert data into a corresponding 2-digit hex representation?
+binascii
+Socket 3:What is the proper format to pro-grammatically pack the IPv4 RAW header?
+BBHHHBBH4s4s
+Socket 4: What is the default (and most common) encoding used when converting data to be sent over the network.
+UTF-8
+Socket 5: What type of header does TCP build to perform the checksum function
+          i.e. [ANSWER] Header
+PSEUDO
+Socket 6: Answer: Bazinga : QmF6aW5nYQo=
+
+Credential farming one:
+net1_student1
+Netflix.and.Chill
+
+
+Net Recon 1: What type of recon is being performed if you are performing ARP scans and sending Gratuitous
+             ARPs to perform a MitM attack
+Active Internal
+
+Net Recon 2: What is the typical flag response (if any) would a Linux host perform when receiving 
+             a Stealth scan on an CLOSED port
+RST
+
+Net Recon 3: What command line tool can be used to pull DNS information from the server using TCP port 43?
+WHOIS
+
+Net Recon 4: Which NMAP scan is able to determine open ports on a target without actually communicating with it
+IDLE SCAN
+
+Net Recon 5: A cyber analyst wants to us Netcat to perform a banner grab on a target IP of 10.1.0.1 port 1111
+nc 10.1.0.1 1111
+
+
+
+Movement and Redirection 1:Which SSH syntax will properly setup a Local port forward from the 
+                           “Outside Host” to access to the Internal Website?
+ssh inside@192.168.1.27 -L 1234:188.8.8.8:80 -NT
+
+Movement and Redirection 2:Which SSH syntax will properly setup a Remote port forward 
+                           from the “Inside Host” to give “Outside Host” access to the Internal Website?
+ssh Outside@147.25.99.1 -R 9876:192.168.1.10:80 -NT
+
+Movement and Redirection 3: What form of encryption does SSH use to verify and authenticate each other and 
+                            to pass the shared key?
+ASYMMETRIC
+
+Movement and Redirection 4: What exact SCP command would you use to copy a file called “secret.txt” from 
+                            the 'tgt' home directory, to your current working directory, using the Dynamic tunnel you have established.
+proxychains scp tgt@192.168.1.10:secret.txt .
+
+Movement and Redirection 5:Which tool adds “FTP Like” services to SSH?
+SFTP
+
+
+Net Analysis 1 : Which option in Wireshark could you use if you wanted to identify which IP address are communicating with each other?
+Conversations
+
+Net analysis 2: What is the name of the data type that is a Cisco proprietary protocol used for collecting IP traffic information and monitoring network flow?
+NetFlow
+
+Net analysis 3:A method of data collection where this device can be placed in line on the wire to capture traffic?
+Tap
+Net analysis 4:A network admin starts to notice an increase in requests for certain files, changes to the registry and unusual tasks being run.
+Compromise
+Net analysis 5: What type of malware that is capable of changing its code and signature patterns with each iteration?
+Metamorphic
