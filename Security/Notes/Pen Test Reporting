@@ -21,8 +21,28 @@
     - OPNOTES vs Formalized Reporting 
  - Penetration Test Reporting
     - Executive Summary
+       - Mission
+       - Scope
+       - parameters
     - Technical Summary
+       - Who,What,When,Where,Why, and how the pen test was conducted
     - Reasons to report
+       - Continuity of Operations
+          - So you can pick up where you left off
+          - So someone else can pick up where you left off
+       - Accounting of actions taken
+          - Documentation may be a legal requirement
+          - Prevent repudiation issues if you need to prove actions taken
+       - Ability to Repeat Exact actions
+          - Documenting what did work so it can be repeated 
+       - Troubleshooting and lessons learned
+          - Documenting what didn't work
     - What to report
+       - Tools used
+       - Timestamps
+       - Success
+       - Failure
+       - Analytic Conclusions
+       - Unexpected Results
     - Screen Captures
     
