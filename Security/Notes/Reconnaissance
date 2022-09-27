@@ -1,1 +1,84 @@
-
+ - Open Source Intelligence
+    - Appropriate Documentation practices
+    - Use of collected data
+    - Collection methods
+ - DoD States:
+    - produced from publicy available information that is collected,exploited, and disseminated in a timely
+      manner to an appropriate audience for addressing a specific intelligence requirement
+ - Documentation
+    - Why is it important
+    - What should we include in documentation
+ - Collection and Use
+    - What do we want to collect
+    - How can it be used in operations
+ - Limitations on Collection
+    - Are there rules that guide our operations and collection parameters
+    - What are important factors when collecting data about a target
+ - Data to Collect
+    - Web Data
+       - cached content,analytics,proxy web application, command line interrogation
+    - Sensitive Data
+       - Business data, profiles, non-profits/charities,business filings, historical and public listings
+    - Publicly Accessible
+       - Physical addresses, phone numbers, email addresses, user names, search engine data, web and traffic cameras, WAP data
+    - Social media
+       - Twitter,Facebook,Instagram,People searches,registery and wish lists
+    - Domain and IP Data
+       - DNS Registration, IP Address Assignments, Geolocation data, Whois
+ - Hyper-Text Markup Language (HTML)
+    - Client-side interpretation
+    - Utilizes elements
+    - Typically redirects to another page for server-side interaction
+    - Cascading Styleshettes (CSS) for page themeing
+ - HTML Scraping script
+"
+  1 #!/usr/bin/python
+  2 
+  3 ##Imports
+  4 import lxml.html
+  5 import requests
+  6 
+  7 #### Grabs the webpage ####
+  8 page = requests.get('http://quotes.toscrape.com')
+  9 ### 127.0.0.1:portnumber or 0.0.0.0:portnumber
+ 10 tree = lxml.html.fromstring(page.content)
+ 11 
+ 12 ### Outlines the tag you want to grab ###
+ 13 #change //small[..] to whatver tag, leave /text() as is
+ 14 results = tree.xpath('//a[@class="tag"]/text()')
+ 15 
+ 16 ### Print it out ###
+ 17 print ('Authors: ',results)
+"
+ - making changes to line 14 changes what you grab
+ 
+ - Advanced Scanning Techniques
+    - Host Discovery
+       - Find hosts that are online
+       - Ping sweep
+    - Host enumeration
+       - Find ports for each host that is online
+       - bannergrabbing
+    - Host Interrogation
+       - Find what service is running on each open/available ports
+ - Sgt. Wilson nmap
+    "
+nmap -Pn -T4 10.50.37.95 -p22,80,8080,8888,2222,4444
+    "
+ - Sgt Wilson ping sweep
+     - for i in {1..254}; do (ping -c 1 192.168.1.$i | grep "bytes from" &);done
+ 
+ - NMAP Scripting Engine
+    - Benefit of scanning with scripts
+    - script managemnet and utilization
+    - usage and examples
+    - Useful scripts
+       - banner.nse
+       - http-enum.nse
+       - smb-os-discovery.nse
+       
+       
+       
+       
+       
+    
