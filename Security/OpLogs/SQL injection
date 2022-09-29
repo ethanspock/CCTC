@@ -1,0 +1,3 @@
+create tunnel to 10.100.28.48:80 
+access the website at 127.0.0.1:port
+navigate to /cases/productsCategory.php?category=1 SELECT table_schema,table_name,_column_name from information_schema.columns
