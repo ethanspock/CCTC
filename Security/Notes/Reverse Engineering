@@ -1,3 +1,4 @@
+ xfreerdp /v:10.50.23.183 /u:student /p:password /size:1920x1000 +clipboard
  - X86_64 Assembly
     - There are 16 general purpose 64-bit registers
        - %rax is the first return register
@@ -64,7 +65,12 @@
             must run under.
           - Document potential uses for the binary.
           - Create mitigations for the binary if it is malicious.
-          - 
+          - Create signatures and indicators of compromise to detect the binary in the future.
+          - Document and save the tools, scripts, code, methods used to analyze the software to better
+            analyze related software in the future
+          - Document proof of concept for exploitation of the binary if it is found to be vulnerable and a
+            potential target. For example, if the binary is running on an adversary network, or if a friendly
+            network may be using the binary
     - Portable Executable Patching/Software Analysis
        - Perform DEBUGGING and DISASSEMBLY
        - Find the SUCCESS/FAILURE
