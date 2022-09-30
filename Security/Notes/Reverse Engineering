@@ -1,0 +1,74 @@
+ - X86_64 Assembly
+    - There are 16 general purpose 64-bit registers
+       - %rax is the first return register
+       - %rbp is the base pointer that keeps track of the base of the stack
+       - %rsp is the stack pointer that points to the top of the stack
+       - %rip is the instruction pointer (contains the next instruction)
+    - You will see arguments passed to functions as something like:
+       - [%ebp-0x8]
+    - Common terms
+       - HEAP is memory that can be allocated and deallocated
+       - STACK is a contiguous section of memory used for passing arguments
+       - GENERAL REGISTER is a multipurpose register that can be used by either programmer or user to store data or a memory location address
+       - CONTROL REGISTER is a processor register that changes or controls the behavior of a CPU
+       - FLAGS REGISTER contains the current state of the processor
+    - Common instruction pointers
+       - MOV - move source to destination
+       - PUSH - push source onto stack
+       - POP - Pop top of stack to destination
+       - INC - Increment source by 1
+       - DEC - Decrement source by 1
+       - ADD - Add source to destination
+       - SUB - Subtract source from destination
+       - CMP - Compare 2 values by subtracting them and setting the %RFLAGS register. ZeroFlag set means they are the same.
+       - JMP - Jump to specified location
+       - JLE - Jump if less than or equal
+       - JE - Jump if equal
+       - JZ - Jump if zero
+       - JNZ - Jump if not zero
+    - Reverse Engineering Workflow (Software)- When conducting don't skip steps even if they seem unecessary
+       - Static
+          - Determine the file type - Is it an .exe? What environment is it designed to run in?(OS,CPU,Architecture,etc)
+          - Determine if file is packed/compressed
+          - Find plain text ascii and unicode string (use strings)
+          - View imports/exports to get a hint of functionality/calls
+          - Look for encrypted sections of the binary
+       - Behavioral
+          - Take a snapshot of the analysis environment - Important! Taking a snapshot on an OpenStack
+            VM takes a substantial amount of time.
+          - Take a snapshot of critical configurations of the analysis environment. (Things like the registry,
+            important directories, etc)
+          - Launch realtime analysis tools (Things like procmon and fakenet)
+          - Execute and interact with the object/binary while taking note of observations
+          - Stop the binary and view how it affected critical configurations (registry, files, etc) by
+            comparing to previous snapshots
+          - Analyze results of realtime analysis tools (did fakenet catch network calls, did procmon show it
+            writing to a file, etc)
+       - Dynamic
+          - Execute binary in a debugger
+          - Step through binary, setting breakpoints as approriate
+          - Continuously rerun the binary and edit it’s parameters through the debugger, as you learn
+            more about how it works
+          - Document all observations and modifications
+       - Disassembly
+          - Disassemble binary in IDA, Ghidra, or other disassembler
+          - Use notes to find artifacts within the disassembly
+          - Find a good spot to work from within the binary. Then quickly browse from the top to the
+            bottom of the disassembly to view the overall flow of the disassembly
+          - Rename variables and functions as appropriate when quickly scanning top to bottom of the disassembly.
+          - Work your way from the bottom to the top - if there are two outcomes choose the one you want
+            to end at, then work your way up from there to determine what needs to happen for the
+            program to flow to the desired outcome.
+       - Document Findings
+          - Document all discovered binary traits, capabilities, and behaviors to include the conditions they
+            must run under.
+          - Document potential uses for the binary.
+          - Create mitigations for the binary if it is malicious.
+          - 
+    - Portable Executable Patching/Software Analysis
+       - Perform DEBUGGING and DISASSEMBLY
+       - Find the SUCCESS/FAILURE
+       - Adjust INSTRUCTIONS
+       - Apply Patch and Save
+       - Execute Patched Binary
+    - 
