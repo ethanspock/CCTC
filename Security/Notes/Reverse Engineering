@@ -77,4 +77,11 @@
        - Adjust INSTRUCTIONS
        - Apply Patch and Save
        - Execute Patched Binary
-    - 
+    - Demo
+       - Check what kind of file it is
+       - Execute the file
+       - Make note of what the program does when it executes
+       - Drop the file into IDA Freeware or Ghidra
+       - In IDA if you see ebp + a variable typically that var is user input
+       - param_1 in Ghidra is more than likely user input
+       - 
