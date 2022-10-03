@@ -84,4 +84,7 @@
        - Drop the file into IDA Freeware or Ghidra
        - In IDA if you see ebp + a variable typically that var is user input
        - param_1 in Ghidra is more than likely user input
-       - 
+       -
+ - Patching
+    - Changing the assembly code to make it do what you want to do
+    
